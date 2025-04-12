@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Header from "@/components/custom/header";
 
 export default function LandingPage() {
   return (
