@@ -4,8 +4,8 @@ import Header from "@/components/custom/header";
 
 export default function LandingPage() {
   return (
-    <div className="container mx-auto px-4 py-16 flex flex-col items-center">
-      <div className="max-w-4xl w-full flex flex-col md:flex-row items-center justify-between gap-12">
+    <div className="w-full px-4 py-16 flex flex-col items-center">
+      <div className="w-full max-w-4xl flex flex-col md:flex-row items-center justify-between gap-12">
         <div className="space-y-8 md:w-1/2">
           {/* Logo */}
           <div className="space-y-2">
