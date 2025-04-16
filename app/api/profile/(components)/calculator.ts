@@ -1,17 +1,16 @@
 import { BaziCalculator } from "@/lib/bazi-calculator-by-alvamind/src/bazi-calculator";
+import { GenderType } from "@/lib/bazi-calculator-by-alvamind/src/types";
 
-// Initialize calculator
-const calculator = new BaziCalculator(
-  1990, // Year
-  5, // Month
-  10, // Day
-  12, // Hour (24-hour format)
-  "male" // Gender
-);
+export function generateBaziData(
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  gender: GenderType
+) {
+  const calculator = new BaziCalculator(year, month, day, hour, gender);
+  const analysis = calculator.getCompleteAnalysis();
+  const chineseCharacters = calculator.toString();
 
-// Get complete analysis
-const analysis = calculator.getCompleteAnalysis();
-
-// Display Chinese characters
-console.log(calculator.toString()); // 庚午年辛巳月乙酉日壬午時
-console.log(analysis);
+  return { analysis, chineseCharacters };
+}

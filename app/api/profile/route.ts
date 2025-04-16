@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { BaziCalculator } from "@/lib/bazi-calculator-by-alvamind/src/bazi-calculator";
+
 import { OpenAI } from "openai";
+import { generateBaziData } from "./(components)/calculator";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -12,10 +13,14 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { year, month, day, hour, gender } = body;
 
-    // Generate Bazi analysis
-    const calculator = new BaziCalculator(year, month, day, hour, gender);
-    const analysis = calculator.getCompleteAnalysis();
-    const chineseCharacters = calculator.toString();
+    // Generate Bazi data using the helper
+    const { analysis, chineseCharacters } = generateBaziData(
+      year,
+      month,
+      day,
+      hour,
+      gender
+    );
 
     // Create a prompt for AI to generate a reading
     const prompt = `
