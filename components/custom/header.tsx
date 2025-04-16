@@ -33,7 +33,7 @@ export default function Header() {
             <span>ASK</span>
           </Link>
           <Link
-            href="/you"
+            href="/dashboard/profile"
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <User className="h-4 w-4" />
