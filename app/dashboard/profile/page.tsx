@@ -49,10 +49,13 @@ const markdownComponents: Components = {
     <h2 className="text-2xl font-semibold mb-3 text-primary" {...props} />
   ),
   h3: ({ node, ...props }) => (
-    <h3 className="text-xl font-medium mb-2 text-primary/90" {...props} />
+    <h3 className="text-2xl font-medium mb-2 text-primary/90" {...props} />
   ),
   p: ({ node, ...props }) => (
-    <p className="mb-4 leading-relaxed text-muted-foreground" {...props} />
+    <p
+      className="text-xl mb-4 leading-relaxed text-muted-foreground"
+      {...props}
+    />
   ),
   ul: ({ node, ...props }) => (
     <ul className="mb-4 pl-6 list-disc space-y-2" {...props} />
@@ -351,6 +354,7 @@ export default function BaziProfilePage() {
                   <ScrollArea className="h-[400px] rounded-md border">
                     <pre className="bg-slate-50 p-4 text-sm font-mono text-slate-800 whitespace-pre-wrap">
                       {JSON.stringify(result.analysis, null, 2)}
+                      {JSON.stringify(result.reading, null, 2)}
                     </pre>
                   </ScrollArea>
                   <p className="text-sm text-muted-foreground italic">
