@@ -4,9 +4,7 @@ import HeroSection from "./(components)/hero";
 import FeaturesSection from "./(components)/features";
 import ProcedureSection from "./(components)/procedure";
 import FooterSection from "./(components)/footer";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import type { Session } from "@supabase/supabase-js"; // Import Session type
+import Try from "./(components)/try";
 
 export default function LandingPage() {
   return (
@@ -16,6 +14,8 @@ export default function LandingPage() {
         <HeroSection />
         {/* Features Section */}
         <FeaturesSection />
+        {/* */}
+        <Try />
         {/* How It Works Section */}
         <ProcedureSection />
         {/* Testimonials Section */}

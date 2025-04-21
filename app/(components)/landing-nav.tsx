@@ -1,8 +1,30 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/theme/ModeToggle";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function LandingNav() {
+export default async function LandingNav() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // If user is logged in, clicking sign in will redirect to dashboard
+  const handleSignInClick = async () => {
+    "use server";
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      redirect("/dashboard");
+    } else {
+      redirect("/login");
+    }
+  };
+
   return (
     <header className="border-b border-border">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -13,21 +35,23 @@ export default function LandingNav() {
         <div className="flex items-center gap-4">
           <ModeToggle />
           <div className="hidden md:flex items-center gap-3">
-            <Link href="/try-it-now">
-              <Button variant="outline" className="rounded-sm font-normal">
-                TRY IT NOW
-              </Button>
-            </Link>
-            <Link href="/sign-in">
-              <Button variant="ghost" className="rounded-sm font-normal">
-                SIGN IN
-              </Button>
-            </Link>
-            <Link href="/sign-up">
-              <Button className="bg-foreground text-background hover:bg-foreground/90 rounded-sm font-normal">
-                SIGN UP
-              </Button>
-            </Link>
+            {user ? (
+              <Link href="/dashboard">
+                <Button variant="ghost" className="rounded-sm font-normal">
+                  DASHBOARD
+                </Button>
+              </Link>
+            ) : (
+              <form action={handleSignInClick}>
+                <Button
+                  variant="ghost"
+                  className="rounded-sm font-normal"
+                  type="submit"
+                >
+                  SIGN IN
+                </Button>
+              </form>
+            )}
           </div>
           <button className="md:hidden">
             <svg
