@@ -116,7 +116,7 @@ export default function Try() {
     setError("");
 
     try {
-      const response = await fetch("/api/profile", {
+      const response = await fetch("/api/free", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
