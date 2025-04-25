@@ -31,6 +31,7 @@ import {
   Loader2,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { BaziChart } from "./BaziChart";
 
 interface BaziResult {
   message: string;
@@ -38,6 +39,38 @@ interface BaziResult {
   reading: string;
   analysis: any;
 }
+
+import type { Components } from "react-markdown";
+
+const markdownComponents: Components = {
+  h1: ({ node, ...props }) => (
+    <h1 className="text-3xl font-bold mb-4 text-primary" {...props} />
+  ),
+  h2: ({ node, ...props }) => (
+    <h2 className="text-2xl font-semibold mb-3 text-primary" {...props} />
+  ),
+  h3: ({ node, ...props }) => (
+    <h3 className="text-2xl font-medium mb-2 text-primary/90" {...props} />
+  ),
+  p: ({ node, ...props }) => (
+    <p
+      className="text-xl mb-4 leading-relaxed text-muted-foreground"
+      {...props}
+    />
+  ),
+  ul: ({ node, ...props }) => (
+    <ul className="mb-4 pl-6 list-disc space-y-2" {...props} />
+  ),
+  li: ({ node, ...props }) => (
+    <li className="text-muted-foreground" {...props} />
+  ),
+  strong: ({ node, ...props }) => (
+    <strong className="font-semibold text-foreground" {...props} />
+  ),
+  em: ({ node, ...props }) => (
+    <em className="italic text-foreground/90" {...props} />
+  ),
+};
 
 export default function ProfileForm() {
   const [loading, setLoading] = useState(false);
@@ -257,83 +290,56 @@ export default function ProfileForm() {
             </p>
           </div>
 
-          <Card className="overflow-hidden border-primary/20">
-            <CardHeader className="bg-primary/5">
-              <CardTitle className="text-2xl font-semibold text-center">
-                Your BaZi Analysis
+          {/* Chart Section */}
+          <Card className="border-primary/20">
+            <CardHeader className="bg-primary/5 text-center">
+              <CardTitle className="text-2xl font-semibold">
+                Your BaZi Chart
               </CardTitle>
+              <CardDescription>
+                Your Four Pillars of Destiny in Chinese Characters
+              </CardDescription>
             </CardHeader>
-            <CardContent className="p-0">
-              <Tabs
-                value={activeTab}
-                onValueChange={setActiveTab}
-                className="w-full"
-              >
-                <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0">
-                  <TabsTrigger
-                    value="chart"
-                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent"
-                  >
-                    Chart
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="reading"
-                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent"
-                  >
-                    Reading
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="technical"
-                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent"
-                  >
-                    Technical Analysis
-                  </TabsTrigger>
-                </TabsList>
+            <CardContent className="p-6">
+              <BaziChart chineseCharacters={result.chineseCharacters} />
+            </CardContent>
+          </Card>
 
-                <TabsContent value="chart" className="p-6">
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-medium flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-primary" />
-                      Your BaZi Chart
-                    </h3>
-                    <Card className="bg-primary/5 border-primary/10">
-                      <CardContent className="p-6">
-                        <div className="font-mono text-lg tracking-wide text-center whitespace-pre-wrap">
-                          {result.chineseCharacters}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </TabsContent>
+          {/* Reading Section */}
+          <Card className="border-primary/20">
+            <CardHeader className="bg-primary/5 text-center">
+              <CardTitle className="text-2xl font-semibold">
+                Your BaZi Reading
+              </CardTitle>
+              <CardDescription>
+                Detailed interpretation of your chart
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="prose prose-slate max-w-none">
+                <ReactMarkdown components={markdownComponents}>
+                  {result.reading}
+                </ReactMarkdown>
+              </div>
+            </CardContent>
+          </Card>
 
-                <TabsContent value="reading" className="p-6">
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-medium flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-primary" />
-                      Your Reading
-                    </h3>
-                    <div className="rounded-md border p-4">
-                      <div className="prose prose-slate max-w-none">
-                        <ReactMarkdown>{result.reading}</ReactMarkdown>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="technical" className="p-6">
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-medium flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-primary" />
-                      Technical Analysis
-                    </h3>
-                    <ScrollArea className="h-[400px] rounded-md border">
-                      <pre className="bg-slate-50 p-4 text-sm font-mono text-slate-800 whitespace-pre-wrap">
-                        {JSON.stringify(result.analysis, null, 2)}
-                      </pre>
-                    </ScrollArea>
-                  </div>
-                </TabsContent>
-              </Tabs>
+          {/* Technical Analysis Section */}
+          <Card className="border-primary/20">
+            <CardHeader className="bg-primary/5 text-center">
+              <CardTitle className="text-2xl font-semibold">
+                Technical Analysis
+              </CardTitle>
+              <CardDescription>
+                Detailed breakdown of your chart elements
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6">
+              <ScrollArea className="h-[400px] rounded-md border">
+                <pre className="bg-slate-50 p-4 text-sm font-mono text-slate-800 whitespace-pre-wrap">
+                  {JSON.stringify(result.analysis, null, 2)}
+                </pre>
+              </ScrollArea>
             </CardContent>
           </Card>
         </>
