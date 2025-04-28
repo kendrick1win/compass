@@ -13,7 +13,9 @@ const openai = new OpenAI({
 export async function POST(req: NextRequest) {
   // Create a Supabase client for server-side operations
   const supabase = await createClient();
-  console.log("Supabase client created");
+  if (process.env.NODE_ENV === "development") {
+    console.log("🔧 API: Supabase client initialized");
+  }
 
   try {
     const body = await req.json();
@@ -32,14 +34,18 @@ export async function POST(req: NextRequest) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    console.log(
-      "User data:",
-      user ? { id: user.id, email: user.email } : "No user"
-    );
+    if (process.env.NODE_ENV === "development") {
+      console.log(
+        "👤 API: Auth status",
+        user ? "Authenticated" : "Unauthorized"
+      );
+    }
 
     // Check if a user is authenticated
     if (!user) {
-      console.log("Unauthorized - No user found");
+      if (process.env.NODE_ENV === "development") {
+        console.log("⚠️ API: Unauthorized request received");
+      }
       // Return an unauthorized error if no user is found
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -69,7 +75,10 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (saveError) {
-      console.error("Error saving profile:", saveError);
+      console.error("❌ API: Database operation failed", {
+        error: saveError.code,
+        message: saveError.message,
+      });
       return NextResponse.json(
         { error: "Failed to save profile data" },
         { status: 500 }
@@ -84,7 +93,12 @@ export async function POST(req: NextRequest) {
       profile: savedProfile,
     });
   } catch (error) {
-    console.error("Error generating Bazi reading:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    console.error("❌ Generation failed", {
+      error: errorMessage,
+      timestamp: new Date().toISOString(),
+    });
     return NextResponse.json(
       { error: "Failed to generate Bazi reading" },
       { status: 500 }
