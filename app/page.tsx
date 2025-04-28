@@ -16,10 +16,6 @@ export default function LandingPage() {
         <FeaturesSection />
         {/* */}
         <Try />
-        {/* How It Works Section */}
-        <ProcedureSection />
-        {/* Testimonials Section */}
-
         {/* CTA Section */}
         <CTASection />
 
