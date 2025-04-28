@@ -291,8 +291,10 @@ export default function ProfileForm() {
           </div>
 
           {/* Chart Section */}
-          <Card className="border-primary/20">
-            <CardHeader className="bg-primary/5 text-center">
+          <Card className="border-primary/20 ">
+            {" "}
+            {/* Changed from opacity-25 to bg-white/25 */}
+            <CardHeader className="bg-primary/3 text-center">
               <CardTitle className="text-2xl font-semibold">
                 Your BaZi Chart
               </CardTitle>
@@ -307,7 +309,7 @@ export default function ProfileForm() {
 
           {/* Reading Section */}
           <Card className="border-primary/20">
-            <CardHeader className="bg-primary/5 text-center">
+            <CardHeader className="bg-primary/3 text-center">
               <CardTitle className="text-2xl font-semibold">
                 Your BaZi Reading
               </CardTitle>
@@ -326,7 +328,7 @@ export default function ProfileForm() {
 
           {/* Technical Analysis Section */}
           <Card className="border-primary/20">
-            <CardHeader className="bg-primary/5 text-center">
+            <CardHeader className="bg-primary/3 text-center">
               <CardTitle className="text-2xl font-semibold">
                 Technical Analysis
               </CardTitle>
