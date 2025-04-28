@@ -16,7 +16,7 @@ export default function Header() {
   return (
     <header className="border-b border-border">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="/dashboard" className="text-xl font-light tracking-wider">
+        <Link href="/" className="text-xl font-light tracking-wider">
           COMPASS
         </Link>
 
