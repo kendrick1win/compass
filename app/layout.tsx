@@ -4,16 +4,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import Header from "@/components/custom/header";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: "Compass | Personal Guidance & Balance",
   description:
@@ -27,16 +17,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
           {children}
         </ThemeProvider>
       </body>
