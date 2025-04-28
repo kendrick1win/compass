@@ -11,11 +11,7 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: NextRequest) {
-  // Create a Supabase client for server-side operations
   const supabase = await createClient();
-  if (process.env.NODE_ENV === "development") {
-    console.log("🔧 API: Supabase client initialized");
-  }
 
   try {
     const body = await req.json();
@@ -34,19 +30,9 @@ export async function POST(req: NextRequest) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (process.env.NODE_ENV === "development") {
-      console.log(
-        "👤 API: Auth status",
-        user ? "Authenticated" : "Unauthorized"
-      );
-    }
 
     // Check if a user is authenticated
     if (!user) {
-      if (process.env.NODE_ENV === "development") {
-        console.log("⚠️ API: Unauthorized request received");
-      }
-      // Return an unauthorized error if no user is found
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -75,9 +61,8 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (saveError) {
-      console.error("❌ API: Database operation failed", {
+      console.error("Database operation failed", {
         error: saveError.code,
-        message: saveError.message,
       });
       return NextResponse.json(
         { error: "Failed to save profile data" },
@@ -95,8 +80,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
-    console.error("❌ Generation failed", {
-      error: errorMessage,
+    console.error("Generation failed", {
       timestamp: new Date().toISOString(),
     });
     return NextResponse.json(
