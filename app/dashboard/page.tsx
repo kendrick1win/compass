@@ -30,7 +30,7 @@ export default async function Dashboard() {
           </Link>
           <Link href="" className="w-full">
             <Button className="w-full py-6 text-lg">
-              Generate Your Daily Reading
+              {"Generate Your Daily Reading (Coming Soon)"}
             </Button>
           </Link>
         </div>
