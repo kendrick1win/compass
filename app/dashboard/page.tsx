@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import Header from "@/components/custom/header";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export default async function Dashboard() {
@@ -12,35 +12,29 @@ export default async function Dashboard() {
     redirect("/login");
   }
 
-  const today = new Date();
-  const username = "user8729";
+  const userEmail = data.user.email || "";
+  const displayName = userEmail.split("@")[0];
 
   return (
     <>
       <Header />
-      Welcome User
-      <div className="flex justify-center items-center min-h-[calc(100vh-4rem)] p-4">
-        <Card className="w-full max-w-md p-6">
-          <div className="grid grid-cols-2 gap-4">
-            <Button className="aspect-square h-full w-full p-2 flex flex-col items-center justify-center">
-              <span className="text-lg font-medium">Free</span>
-              <span className="text-lg font-medium">Reading</span>
+      <main className="container mx-auto px-4">
+        <h1 className="text-4xl font-bold text-center mt-12 mb-8">
+          Welcome, {displayName}!
+        </h1>
+        <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
+          <Link href="/dashboard/profile" className="w-full">
+            <Button className="w-full py-6 text-lg">
+              Go To Your Free Reading
             </Button>
-            <Button className="aspect-square h-full w-full p-2 flex flex-col items-center justify-center">
-              <span className="text-lg font-medium">Daily</span>
-              <span className="text-lg font-medium">Reading</span>
+          </Link>
+          <Link href="" className="w-full">
+            <Button className="w-full py-6 text-lg">
+              Generate Your Daily Reading
             </Button>
-            <Button className="aspect-square h-full w-full p-2 flex flex-col items-center justify-center">
-              <span className="text-lg font-medium">Pair</span>
-              <span className="text-lg font-medium">Reading</span>
-            </Button>
-            <Button className="aspect-square h-full w-full p-2 flex flex-col items-center justify-center">
-              <span className="text-lg font-medium">Ask and</span>
-              <span className="text-lg font-medium">Receive</span>
-            </Button>
-          </div>
-        </Card>
-      </div>
+          </Link>
+        </div>
+      </main>
     </>
   );
 }
