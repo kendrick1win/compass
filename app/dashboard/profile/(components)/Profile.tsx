@@ -87,18 +87,30 @@ export default function ProfileForm() {
         } = await supabase.auth.getUser();
 
         if (user) {
-          const { data: profile, error } = await supabase
+          // First check if profile exists
+          const { count, error: countError } = await supabase
             .from("profiles")
-            .select("*")
-            .eq("user_id", user.id)
-            .single();
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id);
 
-          if (error) {
-            console.error("Error fetching profile:", error);
+          if (countError) {
+            console.error("Error checking profile existence:", countError);
             return;
           }
 
-          if (profile) {
+          // Only fetch full profile if it exists
+          if (count && count > 0) {
+            const { data: profile, error } = await supabase
+              .from("profiles")
+              .select("*")
+              .eq("user_id", user.id)
+              .single();
+
+            if (error) {
+              console.error("Error fetching profile:", error);
+              return;
+            }
+
             setResult({
               message: "Existing reading found",
               chineseCharacters: profile.chinese_characters,
