@@ -1,5 +1,5 @@
 "use client";
-import { login, signup } from "@/app/login/actions";
+import { signup } from "@/app/login/actions";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const handleGoogleSignIn = async () => {
     const supabase = createClientComponentClient();
     await supabase.auth.signInWithOAuth({
@@ -36,12 +36,12 @@ export default function LoginPage() {
         <ArrowLeft className="h-6 w-6" />
         <span>Back</span>
       </Link>
-      <Card className="w-full max-w-sm m-1">
+      <Card className="w-full max-w-sm">
         <form>
           <CardHeader>
-            <CardTitle className="text-2xl">Login</CardTitle>
+            <CardTitle className="text-2xl">Sign Up</CardTitle>
             <CardDescription>
-              Enter your email below to login to your account or sign up.
+              Create a new account to get started.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
@@ -102,13 +102,13 @@ export default function LoginPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4 mt-3">
-            <Button className="w-full" formAction={login}>
-              Log in
+            <Button className="w-full" formAction={signup}>
+              Sign up
             </Button>
             <div className="text-sm text-muted-foreground text-center">
-              Don't have an account?{" "}
-              <Link href="/signup" className="text-primary hover:underline">
-                Sign up
+              Already have an account?{" "}
+              <Link href="/login" className="text-primary hover:underline">
+                Log in
               </Link>
             </div>
           </CardFooter>
