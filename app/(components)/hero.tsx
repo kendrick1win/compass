@@ -1,7 +1,33 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
+import { Session } from "@supabase/supabase-js";
 
 export default function HeroSection() {
+  const [session, setSession] = useState<Session | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    // Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
   return (
     <>
       {/* Hero Section */}
@@ -24,9 +50,9 @@ export default function HeroSection() {
 
             {/* Enter Button */}
             <div className="flex gap-4">
-              <Link href={"/login"}>
+              <Link href={session ? "/dashboard" : "/login"}>
                 <Button className="px-8 py-6 text-lg bg-foreground text-background hover:bg-foreground/90 rounded-sm font-normal">
-                  SIGN UP FOR FREE
+                  {session ? "VIEW DASHBOARD" : "SIGN UP FOR FREE"}
                 </Button>
               </Link>
             </div>

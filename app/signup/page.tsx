@@ -15,11 +15,11 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation"; // Add this import
-import { useState } from "react"; // Add this import
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SignUpPage() {
-  const router = useRouter(); // Add this at the top with other imports
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null); // Add this state
 
   const handleGoogleSignIn = async () => {

@@ -1,6 +1,30 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
+import { Session } from "@supabase/supabase-js";
 export default function CTASection() {
+  const [session, setSession] = useState<Session | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    // Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
   return (
     <>
       <section className="py-16">
@@ -13,9 +37,9 @@ export default function CTASection() {
               Join others who have discovered their personal aspects and found
               greater clarity and purpose.
             </p>
-            <Link href={"/login"}>
-              <Button className="px-8 py-6 text-lg bg-background text-foreground hover:bg-background/90 dark:bg-[#121212] dark:text-[#e5e5e5] dark:hover:bg-[#121212]/90 rounded-sm font-normal">
-                CREATE YOUR PROFILE
+            <Link href={session ? "/dashboard/profile" : "/login"}>
+              <Button className="px-8 py-6 text-lg bg-foreground text-background hover:bg-foreground/90 rounded-sm font-normal">
+                {session ? "VIEW PROFILE" : "CREATE YOUR PROFILE"}
               </Button>
             </Link>
 
