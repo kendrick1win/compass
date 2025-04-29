@@ -19,14 +19,17 @@ import { ArrowLeft } from "lucide-react";
 export default function SignUpPage() {
   const handleGoogleSignIn = async () => {
     const supabase = createClientComponentClient();
+
+    // Set the redirect URL based on the environment (development or production)
+    const redirectUri =
+      process.env.NODE_ENV === "production"
+        ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
+        : `${window.location.origin}/auth/callback`;
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
+      options: { redirectTo: redirectUri },
     });
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Link
