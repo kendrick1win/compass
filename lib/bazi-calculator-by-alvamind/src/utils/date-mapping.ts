@@ -71,8 +71,10 @@ export class DateMappingLoader {
 
   private async loadDateMappings(): Promise<DateMappings> {
     try {
-      const response = await fetch("/dates_mapping.json");
-      return await response.json();
+      // Use the mappingsPath that was found during initialization
+      // Rather than using fetch which doesn't work in this context
+      const data = readFileSync(this.mappingsPath, "utf8");
+      return JSON.parse(data);
     } catch (error) {
       console.error("Failed to load date mappings:", error);
       throw error;
