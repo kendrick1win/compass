@@ -67,12 +67,14 @@ function getDataPath(filename: string): string {
     }
   }
 
-  // If still not found, throw a more descriptive error
-  throw new Error(
-    `Could not find ${filename} in any location. ` +
-      `Environment: ${process.env.NODE_ENV}, ` +
-      `Working directory: ${process.cwd()}`
+  // If still not found, return the most likely fallback path
+  const fallbackPath = path.join(
+    process.cwd(),
+    "lib/bazi-calculator-by-alvamind/src",
+    filename
   );
+  console.log("Using fallback path:", fallbackPath);
+  return fallbackPath;
 }
 
 export class DateMappingLoader {
