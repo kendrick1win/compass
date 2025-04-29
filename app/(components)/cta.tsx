@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 export default function CTASection() {
   return (
     <>
@@ -12,9 +13,12 @@ export default function CTASection() {
               Join others who have discovered their personal aspects and found
               greater clarity and purpose.
             </p>
-            <Button className="px-8 py-6 text-lg bg-background text-foreground hover:bg-background/90 dark:bg-[#121212] dark:text-[#e5e5e5] dark:hover:bg-[#121212]/90 rounded-sm font-normal">
-              CREATE YOUR PROFILE
-            </Button>
+            <Link href={"/login"}>
+              <Button className="px-8 py-6 text-lg bg-background text-foreground hover:bg-background/90 dark:bg-[#121212] dark:text-[#e5e5e5] dark:hover:bg-[#121212]/90 rounded-sm font-normal">
+                CREATE YOUR PROFILE
+              </Button>
+            </Link>
+
             <p className="mt-4 text-sm opacity-80">
               No credit card required. Free basic account.
             </p>

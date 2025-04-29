@@ -268,103 +268,44 @@ export default function Try() {
         <Card className="overflow-hidden border-primary/20">
           <CardHeader className="bg-primary/5">
             <CardTitle className="text-2xl font-semibold text-center">
-              Your BaZi Analysis
+              Your Reading
             </CardTitle>
             <CardDescription className="text-center">
-              Based on {formData.date.toLocaleDateString()} at {formData.hour}
-              :00, {formData.gender}
+              Discover Your Full Potential
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-0">
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="w-full"
-            >
-              <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0">
-                <TabsTrigger
-                  value="chart"
-                  className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent"
-                >
-                  Chart
-                </TabsTrigger>
-                <TabsTrigger
-                  value="reading"
-                  className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent"
-                >
-                  Reading
-                </TabsTrigger>
-                <TabsTrigger
-                  value="technical"
-                  className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent"
-                >
-                  Technical Analysis
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent
-                value="chart"
-                className="p-6 focus-visible:outline-none focus-visible:ring-0"
-              >
-                <div className="space-y-4">
-                  <h3 className="text-xl font-medium flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-primary" />
-                    Your BaZi Chart
-                  </h3>
-                  <Card className="bg-primary/5 border-primary/10">
-                    <CardContent className="p-6">
-                      <div className="font-mono text-lg tracking-wide text-center whitespace-pre-wrap">
-                        {result.chineseCharacters}
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <p className="text-sm text-muted-foreground italic text-center">
-                    This is your Four Pillars of Destiny chart in Chinese
-                    characters
-                  </p>
-                </div>
-              </TabsContent>
-
-              <TabsContent
-                value="reading"
-                className="p-6 focus-visible:outline-none focus-visible:ring-0"
-              >
-                <div className="space-y-4">
-                  <h3 className="text-xl font-medium flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-primary" />
-                    Your Reading
-                  </h3>
-                  <div className="rounded-md border p-4">
-                    <div className="prose prose-slate max-w-none">
-                      <ReactMarkdown components={markdownComponents}>
-                        {result.reading}
-                      </ReactMarkdown>
+          <CardContent className="p-6">
+            <div className="space-y-8">
+              {/* BaZi Chart Section */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-medium flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  Your Chart
+                </h3>
+                <Card className="bg-primary/5 border-primary/10">
+                  <CardContent className="p-6">
+                    <div className="font-mono text-lg tracking-wide text-center whitespace-pre-wrap">
+                      {result.chineseCharacters}
                     </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Reading Section */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-medium flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  Your Reading
+                </h3>
+                <div className="rounded-md border p-4">
+                  <div className="prose prose-slate max-w-none">
+                    <ReactMarkdown components={markdownComponents}>
+                      {result.reading}
+                    </ReactMarkdown>
                   </div>
                 </div>
-              </TabsContent>
-
-              <TabsContent
-                value="technical"
-                className="p-6 focus-visible:outline-none focus-visible:ring-0"
-              >
-                <div className="space-y-4">
-                  <h3 className="text-xl font-medium flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-primary" />
-                    Technical Analysis
-                  </h3>
-                  <ScrollArea className="h-[400px] rounded-md border">
-                    <pre className="bg-slate-50 p-4 text-sm font-mono text-slate-800 whitespace-pre-wrap">
-                      {JSON.stringify(result.analysis, null, 2)}
-                      {JSON.stringify(result.reading, null, 2)}
-                    </pre>
-                  </ScrollArea>
-                  <p className="text-sm text-muted-foreground italic">
-                    This is the raw technical data used to generate your reading
-                  </p>
-                </div>
-              </TabsContent>
-            </Tabs>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
