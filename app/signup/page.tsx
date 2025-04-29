@@ -15,21 +15,42 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation"; // Add this import
+import { useState } from "react"; // Add this import
 
 export default function SignUpPage() {
-  const handleGoogleSignIn = async () => {
-    const supabase = createClientComponentClient();
+  const router = useRouter(); // Add this at the top with other imports
+  const [error, setError] = useState<string | null>(null); // Add this state
 
-    // Set the redirect URL based on the environment (development or production)
-    const redirectUri =
-      process.env.NODE_ENV === "production"
-        ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
-        : `${window.location.origin}/auth/callback`;
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: redirectUri },
-    });
+  const handleGoogleSignIn = async () => {
+    try {
+      const supabase = createClientComponentClient();
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+
+      if (error) {
+        console.error("Error signing in with Google:", error);
+        alert(`Error signing in: ${error.message}`);
+        return;
+      }
+
+      // Refresh the page to update auth state
+      router.refresh();
+    } catch (e) {
+      console.error("Sign in error:", e);
+      setError("An error occurred during sign in");
+    }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Link
