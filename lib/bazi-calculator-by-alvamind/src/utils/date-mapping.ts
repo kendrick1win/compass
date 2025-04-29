@@ -61,12 +61,18 @@ export class DateMappingLoader {
   constructor(
     private mappingsPath: string = getDataPath("dates_mapping.json")
   ) {
-    this.dateMappings = this.loadDateMappings();
+    this.dateMappings = {} as DateMappings;
+    this.initializeMappings();
   }
 
-  private loadDateMappings(): DateMappings {
+  private async initializeMappings() {
+    this.dateMappings = await this.loadDateMappings();
+  }
+
+  private async loadDateMappings(): Promise<DateMappings> {
     try {
-      return JSON.parse(readFileSync(this.mappingsPath, "utf-8"));
+      const response = await fetch("/dates_mapping.json");
+      return await response.json();
     } catch (error) {
       console.error("Failed to load date mappings:", error);
       throw error;
