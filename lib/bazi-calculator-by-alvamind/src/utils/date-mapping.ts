@@ -7,6 +7,7 @@ import type { DateMappings } from "../types";
 function getDataPath(filename: string): string {
   // In development, use the project root
   if (process.env.NODE_ENV !== "production") {
+    console.log("development mode");
     return path.join(
       process.cwd(),
       "lib/bazi-calculator-by-alvamind/src",
@@ -16,6 +17,11 @@ function getDataPath(filename: string): string {
 
   // In production (Vercel), try different possible locations
   const possiblePaths = [
+    // Add more production paths at the beginning
+    path.join(process.cwd(), "app/api", filename),
+    path.join(process.cwd(), "app", filename),
+    path.join(process.cwd(), filename),
+    // Keep existing paths
     path.join(process.cwd(), "lib/bazi-calculator-by-alvamind/src", filename),
     path.join(
       process.cwd(),
@@ -30,7 +36,10 @@ function getDataPath(filename: string): string {
     path.join(process.cwd(), ".next/server/app/api", filename),
     path.join(process.cwd(), ".next/server/chunks", filename),
   ];
+
   // Log the paths we're trying
+  console.log("Environment:", process.env.NODE_ENV);
+  console.log("Current working directory:", process.cwd());
   console.log("Trying to find data file in paths:", possiblePaths);
 
   // Return the first path that exists
@@ -40,18 +49,30 @@ function getDataPath(filename: string): string {
       console.log("Found data file at:", possiblePath);
       return possiblePath;
     } catch (e) {
+      console.log(`Failed to access ${possiblePath}:`, (e as Error).message);
       continue;
     }
   }
 
-  // If no path exists, return the most likely one
-  const fallbackPath = path.join(
-    process.cwd(),
-    "lib/bazi-calculator-by-alvamind/src",
-    filename
+  // If no path exists, try loading from a different location in production
+  if (process.env.NODE_ENV === "production") {
+    try {
+      // In production, try to load from the build directory
+      const buildPath = path.join(process.cwd(), ".next/static/data", filename);
+      accessSync(buildPath);
+      console.log("Found data file in build directory:", buildPath);
+      return buildPath;
+    } catch (e: unknown) {
+      console.log("Failed to load from build directory:", (e as Error).message);
+    }
+  }
+
+  // If still not found, throw a more descriptive error
+  throw new Error(
+    `Could not find ${filename} in any location. ` +
+      `Environment: ${process.env.NODE_ENV}, ` +
+      `Working directory: ${process.cwd()}`
   );
-  console.log("Using fallback path:", fallbackPath);
-  return fallbackPath;
 }
 
 export class DateMappingLoader {
