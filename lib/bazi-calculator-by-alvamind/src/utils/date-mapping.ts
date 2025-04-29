@@ -1,5 +1,5 @@
 // src/utils/date-mapping.ts
-import { readFileSync, accessSync, statSync } from "fs";
+import { readFileSync, accessSync } from "fs";
 import path from "path";
 import type { DateMappings } from "../types";
 
@@ -61,46 +61,14 @@ export class DateMappingLoader {
   constructor(
     private mappingsPath: string = getDataPath("dates_mapping.json")
   ) {
-    this.dateMappings = {} as DateMappings;
-    this.initializeMappings();
+    this.dateMappings = this.loadDateMappings();
   }
 
-  private async initializeMappings() {
-    this.dateMappings = await this.loadDateMappings();
-  }
-
-  private async loadDateMappings(): Promise<DateMappings> {
+  private loadDateMappings(): DateMappings {
     try {
-      console.log("Starting to load JSON file from:", this.mappingsPath);
-
-      // Get file stats to log size
-      const stats = statSync(this.mappingsPath);
-      console.log(`File size: ${stats.size / (1024 * 1024)} MB`);
-
-      // Use a more memory-efficient approach for large files
-      const data = readFileSync(this.mappingsPath, "utf8");
-      console.log("File read complete, parsing JSON...");
-
-      // Parse in smaller chunks if needed
-      let result;
-      try {
-        result = JSON.parse(data);
-        console.log("JSON parsing successful");
-      } catch (parseError) {
-        console.error("JSON parse error:", parseError);
-        throw parseError;
-      }
-
-      return result;
+      return JSON.parse(readFileSync(this.mappingsPath, "utf-8"));
     } catch (error) {
       console.error("Failed to load date mappings:", error);
-
-      // Provide more context in the error
-      if (error instanceof Error) {
-        console.error(`Error name: ${error.name}, Message: ${error.message}`);
-        if (error.stack) console.error(`Stack: ${error.stack}`);
-      }
-
       throw error;
     }
   }
