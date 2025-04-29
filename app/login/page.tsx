@@ -15,26 +15,39 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+
   const handleGoogleSignIn = async () => {
-    const supabase = createClientComponentClient();
+    try {
+      const supabase = createClientComponentClient();
 
-    // Get the current URL's origin
-    const isProduction = process.env.NODE_ENV === "production";
-    const redirectUrl = isProduction
-      ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
-      : `${window.location.origin}/auth/callback`;
-
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: redirectUrl,
-        queryParams: {
-          next: "/",
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            next: "/",
+          },
         },
-      },
-    });
+      });
+
+      if (error) {
+        console.error("Auth Error:", error);
+        setError(error.message);
+        return;
+      }
+
+      // Refresh the page to update auth state
+      router.refresh();
+    } catch (e) {
+      console.error("Sign in error:", e);
+      setError("An error occurred during sign in");
+    }
   };
 
   return (
@@ -115,6 +128,11 @@ export default function LoginPage() {
             <Button className="w-full" formAction={login}>
               Log in
             </Button>
+            {error && (
+              <div className="text-red-500 text-sm mt-2 text-center">
+                {error}
+              </div>
+            )}
             <div className="text-sm text-muted-foreground text-center">
               Don't have an account?{" "}
               <Link href="/signup" className="text-primary hover:underline">
