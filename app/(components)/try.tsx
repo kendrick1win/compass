@@ -162,7 +162,7 @@ export default function Try() {
             <span>Your Birth Information</span>
           </CardTitle>
           <CardDescription>
-            Enter your birth details to generate your personalized BaZi chart
+            Enter your birth details to generate your personalized chart
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -179,6 +179,7 @@ export default function Try() {
                   value={formData.date.toISOString().split("T")[0]}
                   onChange={handleDateChange}
                   required
+                  className="[&::-webkit-calendar-picker-indicator]:opacity-50 hover:[&::-webkit-calendar-picker-indicator]:opacity-100"
                 />
               </div>
 
@@ -234,7 +235,7 @@ export default function Try() {
               </>
             ) : (
               <>
-                Generate BaZi Reading
+                Generate Reading
                 <ChevronRight className="ml-2 h-4 w-4" />
               </>
             )}
