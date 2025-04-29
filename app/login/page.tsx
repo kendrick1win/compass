@@ -19,10 +19,20 @@ import { ArrowLeft } from "lucide-react";
 export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     const supabase = createClientComponentClient();
+
+    // Get the current URL's origin
+    const isProduction = process.env.NODE_ENV === "production";
+    const redirectUrl = isProduction
+      ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
+      : `${window.location.origin}/auth/callback`;
+
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: redirectUrl,
+        queryParams: {
+          next: "/",
+        },
       },
     });
   };
