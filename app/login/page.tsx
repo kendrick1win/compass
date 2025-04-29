@@ -31,14 +31,15 @@ export default function LoginPage() {
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
-            next: "/",
+            access_type: "offline",
+            prompt: "consent",
           },
         },
       });
 
       if (error) {
-        console.error("Auth Error:", error);
-        setError(error.message);
+        console.error("Error signing in with Google:", error);
+        alert(`Error signing in: ${error.message}`);
         return;
       }
 
