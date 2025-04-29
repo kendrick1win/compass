@@ -1,10 +1,11 @@
 // src/utils/date-mapping.ts
-import { accessSync, readFileSync } from "fs";
+import { readFileSync, accessSync } from "fs";
 import path from "path";
 import type { DateMappings } from "../types";
 
 // Helper function to get data file path
 function getDataPath(filename: string): string {
+  // In development, use the project root
   if (process.env.NODE_ENV !== "production") {
     return path.join(
       process.cwd(),
@@ -12,8 +13,46 @@ function getDataPath(filename: string): string {
       filename
     );
   }
-  // In production, use the public directory
-  return path.join(process.cwd(), "public", filename);
+
+  // In production (Vercel), try different possible locations
+  const possiblePaths = [
+    path.join(process.cwd(), "public", filename),
+    path.join(process.cwd(), "lib/bazi-calculator-by-alvamind/src", filename),
+    path.join(
+      process.cwd(),
+      ".next/server/app/api/lib/bazi-calculator-by-alvamind/src",
+      filename
+    ),
+    path.join(
+      process.cwd(),
+      ".next/server/chunks/lib/bazi-calculator-by-alvamind/src",
+      filename
+    ),
+    path.join(process.cwd(), ".next/server/app/api", filename),
+    path.join(process.cwd(), ".next/server/chunks", filename),
+  ];
+  // Log the paths we're trying
+  console.log("Trying to find data file in paths:", possiblePaths);
+
+  // Return the first path that exists
+  for (const possiblePath of possiblePaths) {
+    try {
+      accessSync(possiblePath);
+      console.log("Found data file at:", possiblePath);
+      return possiblePath;
+    } catch (e) {
+      continue;
+    }
+  }
+
+  // If no path exists, return the most likely one
+  const fallbackPath = path.join(
+    process.cwd(),
+    "lib/bazi-calculator-by-alvamind/src",
+    filename
+  );
+  console.log("Using fallback path:", fallbackPath);
+  return fallbackPath;
 }
 
 export class DateMappingLoader {
