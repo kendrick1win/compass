@@ -337,25 +337,6 @@ export default function ProfileForm() {
               </div>
             </CardContent>
           </Card>
-
-          {/* Technical Analysis Section */}
-          <Card className="border-primary/20">
-            <CardHeader className="bg-primary/3 text-center">
-              <CardTitle className="text-2xl font-semibold">
-                Technical Analysis
-              </CardTitle>
-              <CardDescription>
-                Detailed breakdown of your chart elements
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-6">
-              <ScrollArea className="h-[400px] rounded-md border">
-                <pre className="bg-slate-50 p-4 text-sm font-mono text-slate-800 whitespace-pre-wrap">
-                  {JSON.stringify(result.analysis, null, 2)}
-                </pre>
-              </ScrollArea>
-            </CardContent>
-          </Card>
         </>
       )}
 
