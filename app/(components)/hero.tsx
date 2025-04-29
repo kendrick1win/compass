@@ -26,13 +26,7 @@ export default function HeroSection() {
             {/* Enter Button */}
             <div className="flex gap-4">
               <Button className="px-8 py-6 text-lg bg-foreground text-background hover:bg-foreground/90 rounded-sm font-normal">
-                SIGN UP FREE
-              </Button>
-              <Button
-                variant="outline"
-                className="px-8 py-6 text-lg rounded-sm font-normal"
-              >
-                LEARN MORE
+                SIGN UP FOR FREE
               </Button>
             </div>
           </div>
