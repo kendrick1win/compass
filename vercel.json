@@ -1,8 +1,15 @@
 {
     "functions": {
-      "api/**/*": {
-        "memory": 1024,
+      "app/api/daily/route.js": {
+        "includeFiles": "lib/bazi-converter/**"
+      },
+      "app/api/profile/route.js": {
+        "includeFiles": "lib/bazi-converter/**"
+      },
+      "app/api/**/*": {
         "maxDuration": 60
       }
-    }
+    },
+    "buildCommand": "next build",
+    "outputDirectory": ".next"
   }
