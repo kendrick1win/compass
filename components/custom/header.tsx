@@ -52,7 +52,6 @@ export default function Header() {
             <LogOut className="h-4 w-4" />
             <span>SIGN OUT</span>
           </button>
-          <ModeToggle />
         </nav>
 
         <div className="flex items-center gap-4">
@@ -82,7 +81,7 @@ export default function Header() {
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="absolute top-full left-0 right-0 bg-background/98 backdrop-blur-md border-b border-border shadow-lg md:hidden z-50">
+          <div className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-border shadow-lg md:hidden">
             <nav className="container mx-auto px-4 py-4 flex flex-col gap-4">
               <Link
                 href="/dashboard"
