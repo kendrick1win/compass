@@ -1,5 +1,5 @@
 import CTASection from "./(components)/cta";
-import LandingNav from "./(components)/landing-nav";
+import LandingNav from "./(components)/nav/landing-nav";
 import HeroSection from "./(components)/hero";
 import FeaturesSection from "./(components)/features";
 import ProcedureSection from "./(components)/procedure";
