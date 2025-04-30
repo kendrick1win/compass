@@ -1,4 +1,5 @@
 "use client";
+import { signup } from "@/app/login/actions";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,53 +18,10 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import GoogleSignInButton from "@/components/login/googleSignInButton";
-import { toast } from "sonner";
-
-interface SignupResult {
-  error?: string;
-}
-
-export async function signup(formData: FormData): Promise<SignupResult | void> {
-  // Implementation here
-}
 
 export default function SignUpPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (formData: FormData) => {
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address");
-      toast.error("Please enter a valid email address");
-      return;
-    }
-
-    // Password validation
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      toast.error("Password must be at least 6 characters long");
-      return;
-    }
-
-    try {
-      const result = await signup(formData);
-      if (result?.error) {
-        setError(result.error);
-        toast.error(result.error);
-      } else {
-        toast.success("Account created successfully!");
-        router.push("/login");
-      }
-    } catch (err) {
-      setError("An error occurred during sign up");
-      toast.error("An error occurred during sign up");
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -75,7 +33,7 @@ export default function SignUpPage() {
         <span>Back</span>
       </Link>
       <Card className="w-full max-w-sm">
-        <form action={handleSubmit}>
+        <form>
           <CardHeader>
             <CardTitle className="text-2xl">Sign Up</CardTitle>
             <CardDescription>
@@ -106,8 +64,6 @@ export default function SignUpPage() {
                 type="email"
                 placeholder="m@example.com"
                 required
-                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                title="Please enter a valid email address"
               />
             </div>
             {/* Password Field */}
@@ -117,7 +73,7 @@ export default function SignUpPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4 mt-3">
-            <Button className="w-full" formAction={handleSubmit}>
+            <Button className="w-full" formAction={signup}>
               Sign up
             </Button>
             {error && (
