@@ -7,23 +7,27 @@ export default function GoogleSignInButton() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
+    setIsLoading(true); // Start loading spinner
+
     try {
-      setIsLoading(true);
       const supabase = createClientComponentClient();
 
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
-          scopes: "email profile",
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
         },
       });
-    } catch (error) {
-      console.error("Google sign in error:", error);
+    } catch (e) {
+      console.error("Sign in error:", e);
+    } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <Button
       type="button"
