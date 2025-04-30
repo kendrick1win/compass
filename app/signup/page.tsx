@@ -26,25 +26,17 @@ export default function SignUpPage() {
     try {
       const supabase = createClientComponentClient();
 
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
             access_type: "offline",
-            prompt: "consent",
           },
         },
       });
 
-      if (error) {
-        console.error("Error signing in with Google:", error);
-        alert(`Error signing in: ${error.message}`);
-        return;
-      }
-
-      // Refresh the page to update auth state
-      router.refresh();
+      // No error handling or router.refresh() - let the redirect handle everything
     } catch (e) {
       console.error("Sign in error:", e);
       setError("An error occurred during sign in");
