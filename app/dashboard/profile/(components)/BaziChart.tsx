@@ -9,7 +9,7 @@ export function BaziChart({ chineseCharacters }: BaziChartProps) {
   const labels = ["Hour", "Day", "Month", "Year"];
 
   return (
-    <div className="flex flex-row justify-between items-center gap-4 w-full">
+    <div className="flex flex-row justify-between items-center gap-4 w-full relative z-0">
       {pillars.map((pillar, index) => (
         <div key={index} className="flex-1">
           <Card className="bg-primary/5 border-primary/10">
