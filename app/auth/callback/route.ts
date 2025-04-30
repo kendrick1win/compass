@@ -1,30 +1,39 @@
 import { NextResponse } from "next/server";
-// The client you created from the Server-Side Auth instructions
+import { NextRequest } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
-export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get("code");
-  // if "next" is in param, use it as the redirect URL
-  const next = searchParams.get("next") ?? "/";
+export async function GET(request: NextRequest) {
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
+  const next = requestUrl.searchParams.get("next") ?? "/dashboard";
 
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
-      const isLocalEnv = process.env.NODE_ENV === "development";
-      if (isLocalEnv) {
-        // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-        return NextResponse.redirect(`${origin}${next}`);
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`);
-      } else {
-        return NextResponse.redirect(`${origin}${next}`);
-      }
+
+    if (error) {
+      console.error("Auth error:", error);
+      return NextResponse.redirect(
+        `${requestUrl.origin}/auth/auth-code-error?error=${encodeURIComponent(
+          error.message
+        )}`
+      );
+    }
+
+    const forwardedHost = request.headers.get("x-forwarded-host");
+    const isLocalEnv = process.env.NODE_ENV === "development";
+
+    if (isLocalEnv) {
+      return NextResponse.redirect(`${requestUrl.origin}${next}`);
+    } else if (forwardedHost) {
+      return NextResponse.redirect(`https://${forwardedHost}${next}`);
+    } else {
+      return NextResponse.redirect(`${requestUrl.origin}${next}`);
     }
   }
 
-  // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+  // More informative error redirect
+  return NextResponse.redirect(
+    `${new URL(request.url).origin}/auth/auth-code-error?error=missing_code`
+  );
 }
