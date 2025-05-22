@@ -92,13 +92,6 @@ export default function Header() {
               </Link>
 
               <Link
-                href=""
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-sm"
-              >
-                <MessageCircle className="h-4 w-4" />
-                <span>ASK {"(COMING SOON)"}</span>
-              </Link>
-              <Link
                 href="/dashboard/profile"
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-sm"
               >
