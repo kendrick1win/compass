@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import Loading from "./loading";
 import {
   Calendar,
   Clock,
@@ -143,6 +143,10 @@ export default function Try() {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">

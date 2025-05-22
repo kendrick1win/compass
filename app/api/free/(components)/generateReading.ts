@@ -11,20 +11,37 @@ export async function generateBaziReading(
   const prompt = `
   Based on this BaZi chart analysis:
 
-  Chinese characters: ${chineseCharacters}
 
-  Bazi analysis: ${analysis}
+ Chinese characters: ${chineseCharacters}
 
-  Please provide a concise (300-500 word) Bazi reading that offers:
-  1. An overview of this person's character
-  2. Key strengths and weaknesses
-  3. General career aptitude
-  4. Important life insights
 
-  Keep the tone professional but accessible. Focus only on insights that can be directly derived from the BaZi chart. 
-  Write personality profile paragraphs using "you" language. Make it personal and insightful. No questions or disclaimers Use markdown format to display headers with emojis. Add a section for DO's and DONT'S.
-  `;
+ Bazi analysis: ${analysis}
 
+
+ Please provide a concise Bazi reading that offers:
+ 1. 🌞 Who You Are — Day Master: [Element] ([Type] [Element])
+ 2. 🔑 Key strengths and weaknesses
+ 3. 💼 Career & Success
+ 4. ❤️ Love & Relationships
+ 5. 🏥 Health & Energy
+ 6. ⛰️ Important life insights
+
+  ⏳ Timing: Life Flow Preview
+  When will things rise for me?
+
+  🚀 [Year range]（[Chinese characters]）
+  [Brief prediction about this period]
+
+  🌱 [Year range]（[Chinese characters]）
+  [Brief prediction about this period]
+
+  🌳 [Year range]（[Chinese characters]）
+  [Brief prediction about this period]
+
+
+ Keep the tone professional but accessible, give short description then bullet points. Focus only on insights that can be directly derived from the BaZi chart.
+ Write personality profile paragraphs using "you" language. Make it personal and insightful. No questions or disclaimers Use markdown format to display headers with emojis. Add a section for DO's and DONT'S.
+ `;
   const completion = await openai.chat.completions.create({
     model: "gpt-4o",
     messages: [
