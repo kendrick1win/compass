@@ -30,13 +30,13 @@ export async function generateBaziReading(
   When will things rise for me?
 
   🚀 [Year range]（[Chinese characters]）
-  [Brief prediction about this period]
+  [Brief outlook and suggestion about this period]
 
   🌱 [Year range]（[Chinese characters]）
-  [Brief prediction about this period]
+  [Brief outlook and suggestion about this period]
 
   🌳 [Year range]（[Chinese characters]）
-  [Brief prediction about this period]
+  [Brief outlook and suggestion about this period]
 
 
  Keep the tone professional but accessible, give short description then bullet points. Focus only on insights that can be directly derived from the BaZi chart.

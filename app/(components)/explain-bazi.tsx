@@ -5,7 +5,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const slides = [
   {
-    title: "What Is Bazi?",
+    title: "What Is Bazi? ☯️",
     content: `Bazi, also known as the Four Pillars of Destiny, is a traditional Chinese system 
     that uses your birth date and time to reveal patterns in your personality, relationships, 
     career, and life direction. It is based on eight characters (八字) derived from the year, 
@@ -139,17 +139,37 @@ const WhatIsBaziSection = () => {
 
           <button
             onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 p-2 bg-white rounded-full shadow-lg"
+            className="absolute left-0 top-1/2 -translate-y-1/2 p-2 bg-white rounded-full shadow-lg
+              hidden xs:flex sm:flex"
+            style={{ zIndex: 10 }}
           >
             <ChevronLeftIcon className="h-6 w-6" />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 p-2 bg-white rounded-full shadow-lg"
+            className="absolute right-0 top-1/2 -translate-y-1/2 p-2 bg-white rounded-full shadow-lg
+              hidden xs:flex sm:flex"
+            style={{ zIndex: 10 }}
           >
             <ChevronRightIcon className="h-6 w-6" />
           </button>
-
+          {/* Mobile arrows below content */}
+          <div className="flex justify-center gap-8 mt-6 sm:hidden">
+            <button
+              onClick={prevSlide}
+              className="p-2 bg-white rounded-full shadow-lg"
+              style={{ zIndex: 10 }}
+            >
+              <ChevronLeftIcon className="h-6 w-6" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="p-2 bg-white rounded-full shadow-lg"
+              style={{ zIndex: 10 }}
+            >
+              <ChevronRightIcon className="h-6 w-6" />
+            </button>
+          </div>
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex space-x-2">
             {slides.map((_, index) => (
               <button
