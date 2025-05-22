@@ -133,22 +133,38 @@ const WhatIsBaziSection = () => {
                     </div>
                   )}
                   {/* Mobile arrows below content */}
-                  <div className="flex justify-center gap-8 mt-6 sm:hidden">
-                    <button
-                      onClick={prevSlide}
-                      className="p-2 bg-white rounded-full shadow-lg"
-                      style={{ zIndex: 10 }}
-                    >
-                      <ChevronLeftIcon className="h-6 w-6" />
-                    </button>
-                    <button
-                      onClick={nextSlide}
-                      className="p-2 bg-white rounded-full shadow-lg"
-                      style={{ zIndex: 10 }}
-                    >
-                      <ChevronRightIcon className="h-6 w-6" />
-                    </button>
+                  <div className="flex flex-col items-center sm:hidden mt-6">
+                    <div className="flex justify-center gap-8">
+                      <button
+                        onClick={prevSlide}
+                        className="p-2 bg-white rounded-full shadow-lg"
+                        style={{ zIndex: 10 }}
+                      >
+                        <ChevronLeftIcon className="h-6 w-6" />
+                      </button>
+                      <button
+                        onClick={nextSlide}
+                        className="p-2 bg-white rounded-full shadow-lg"
+                        style={{ zIndex: 10 }}
+                      >
+                        <ChevronRightIcon className="h-6 w-6" />
+                      </button>
+                    </div>
+                    <div className="flex justify-center space-x-2 mt-4">
+                      {slides.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentSlide(index)}
+                          className={`h-2 w-2 rounded-full ${
+                            currentSlide === index
+                              ? "bg-blue-600"
+                              : "bg-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
+                  {/* End mobile arrows and dots */}
                 </div>
               </div>
             </motion.div>
@@ -169,7 +185,8 @@ const WhatIsBaziSection = () => {
           >
             <ChevronRightIcon className="h-6 w-6" />
           </button>
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex space-x-2">
+          {/* Desktop dots always below arrows */}
+          <div className="absolute left-1/2 -translate-x-1/2 space-x-2 bottom-6 hidden sm:flex">
             {slides.map((_, index) => (
               <button
                 key={index}
