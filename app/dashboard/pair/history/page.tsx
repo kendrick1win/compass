@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 type PairReading = {
   id: string;
+  partner_name: string; // <-- Add this line
   partner_gender: string;
   partner_birthdate: string;
   relationship_type: string;
@@ -112,7 +113,8 @@ export default function HistoryPage() {
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-primary" />
                     <span className="capitalize">
-                      {reading.relationship_type.replace("_", " ")}
+                      {reading.partner_name ||
+                        reading.relationship_type.replace("_", " ")}
                     </span>
                   </div>
                   <span className="text-sm text-muted-foreground">
