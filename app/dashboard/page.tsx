@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import Header from "@/components/custom/header";
 import { Button } from "@/components/ui/button";
+import DailyReadingTest from "./(components)/DailyReading";
 
 export default async function Dashboard() {
   const supabase = await createClient();
@@ -22,17 +23,13 @@ export default async function Dashboard() {
         <h1 className="text-4xl font-bold text-center mt-12 mb-8">
           Welcome, {displayName}!
         </h1>
-        <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
-          <Link href="/dashboard/profile" className="w-full">
+        <div className="flex flex-col items-center gap-4 w-full">
+          <Link href="/dashboard/profile" className="w-full max-w-4xl">
             <Button className="w-full py-6 text-lg">
               Go To Your Free Reading
             </Button>
           </Link>
-          <Link href="" className="w-full">
-            <Button className="w-full py-6 text-lg">
-              {"Generate Your Daily Reading (Coming Soon)"}
-            </Button>
-          </Link>
+          <DailyReadingTest />
         </div>
       </main>
     </>

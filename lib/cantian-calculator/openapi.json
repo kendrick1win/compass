@@ -1,0 +1,225 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Get Chinese Lunar Birthday and BaZi (八字) Information",
+    "description": "Retrieves Chinese Lunar Birthday Information from standard birthday and location",
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api-asia.cantian.ai"
+    }
+  ],
+  "paths": {
+    "/cantian_get_bazi_from_solar": {
+      "get": {
+        "description": "Retrieves BaZi (八字) information based on the Gregorian (solar) calendar date and location (基于公历日期和地点获取八字信息)",
+        "operationId": "GetBirthdayInfoFromSolar",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "description": "Year of the solar birthday (公历生日的年份), e.g., 2023",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "description": "Month of the solar birthday (公历生日的月份), e.g., 7",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "day",
+            "in": "query",
+            "description": "Day of the solar birthday (公历生日的日子), e.g., 21",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "hour",
+            "in": "query",
+            "description": "Hour of the solar birthday in 24-hour format (公历生日的小时，24小时制), e.g., 15",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "minute",
+            "in": "query",
+            "description": "Minute of the solar birthday (公历生日的分钟), e.g., 30",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "description": "Location for determining BaZi (用于确定八字的地点), default is Beijing (默认为北京), optional",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "description": "Gender, where 1 represents male and 0 female (性别，其中1代表男性，0代表女性), default is 1 (默认为1)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "description": "gpts2 as fix value to tell the source of the request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nickname",
+            "in": "query",
+            "description": "optional, nickname of the bazi report user",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "/bazi_get_year_info": {
+      "get": {
+        "description": "Retrieves information about a particular year in terms of BaZi and Chinese zodiac (获取特定年份的八字,生肖,流年及流月信息)",
+        "operationId": "GetYearInfo",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "description": "Year to retrieve information for (要获取信息的年份), e.g., 2024",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "dayGan",
+            "in": "query",
+            "description": "user's day gan information to calculate Shi Shen (用户的日柱天干信息，用来计算十神), e.g., 丙",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "/cantian_get_bazi_from_sizhu": {
+      "get": {
+        "description": "Retrieves bazi information from bazi directly (根据四柱八字直接进行排盘)，比如用户输入'辛亥 戊戌 丁亥 甲辰'",
+        "operationId": "GetBirthdayInfoFromBazi",
+        "parameters": [
+          {
+            "name": "year_gan_zhi",
+            "in": "query",
+            "description": "Year bazi characters (年柱八字信息，两个字，包括天干和地支), e.g., 辛亥",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month_gan_zhi",
+            "in": "query",
+            "description": "Month bazi characters (月柱八字信息，两个字，包括天干和地支), e.g., 戊戌",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "day_gan_zhi",
+            "in": "query",
+            "description": "Day bazi characters (日柱八字信息，两个字，包括天干和地支), e.g., 丁亥",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "time_gan_zhi",
+            "in": "query",
+            "description": "Time bazi characters (时柱八字信息，两个字，包括天干和地支), e.g., 甲辰",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "solar_year",
+            "in": "query",
+            "description": "possible solar year from user input (可能或相近的公历年份，用于确认用户的具体出生年份), e.g., 2000",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "description": "Location for determining BaZi (用于确定八字的地点), default is Beijing (默认为北京)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "description": "Gender, where 1 represents male and 0 female (性别，其中1代表男性，0代表女性), default is 1 (默认为1)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "description": "gpts2 as fix value to tell the source of the request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nickname",
+            "in": "query",
+            "description": "optional, nickname of the bazi report user",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}
