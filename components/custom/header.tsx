@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Home, Calendar, User, MessageCircle, LogOut } from "lucide-react";
+import { Home, Calendar, User, Users, LogOut } from "lucide-react";
 import { ModeToggle } from "../theme/ModeToggle";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { redirect } from "next/navigation";
@@ -32,11 +32,11 @@ export default function Header() {
           </Link>
 
           <Link
-            href=""
+            href="/dashboard/pair"
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
-            <MessageCircle className="h-4 w-4" />
-            <span>ASK {"(COMING SOON)"}</span>
+            <Users className="h-4 w-4" />
+            <span>Pair</span>
           </Link>
           <Link
             href="/dashboard/profile"
@@ -91,13 +91,6 @@ export default function Header() {
                 <span>HOME</span>
               </Link>
 
-              <Link
-                href=""
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-sm"
-              >
-                <MessageCircle className="h-4 w-4" />
-                <span>ASK {"(COMING SOON)"}</span>
-              </Link>
               <Link
                 href="/dashboard/profile"
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-sm"

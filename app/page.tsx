@@ -5,7 +5,7 @@ import FeaturesSection from "./(components)/features";
 import ProcedureSection from "./(components)/procedure";
 import FooterSection from "./(components)/footer";
 import Try from "./(components)/try";
-
+import WhatIsBaziSection from "./(components)/explain-bazi";
 export default function LandingPage() {
   return (
     <>
@@ -14,6 +14,7 @@ export default function LandingPage() {
         <HeroSection />
         {/* Features Section */}
         <FeaturesSection />
+        <WhatIsBaziSection />
         {/* */}
         <Try />
 
