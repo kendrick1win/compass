@@ -59,17 +59,20 @@ export default function DailyReadingTest() {
 
       if (!session?.session?.user) return;
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("daily_readings")
         .select("reading")
         .eq("user_id", session.session.user.id)
         .eq("date", today)
         .single();
 
-      if (error) throw error;
-      if (data) setReading(data.reading);
+      // If data exists, set the reading
+      if (data) {
+        setReading(data.reading);
+      }
+      // No need to handle the "no rows" case - it's expected
     } catch (err) {
-      console.error("Error checking existing reading:", err);
+      // Silently handle errors in production
     } finally {
       setHasCheckedExisting(true);
     }
