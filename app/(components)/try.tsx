@@ -41,6 +41,12 @@ interface BaziResult {
   analysis: any;
 }
 
+// Helper to truncate reading
+function getPartialReading(reading: string, percent: number = 0.7) {
+  const length = Math.floor(reading.length * percent);
+  return reading.slice(0, length);
+}
+
 const markdownComponents: Components = {
   h1: ({ node, ...props }) => (
     <h1 className="text-3xl font-bold mb-4 text-primary" {...props} />
@@ -302,11 +308,29 @@ export default function Try() {
                   <FileText className="h-5 w-5 text-primary" />
                   Your Reading
                 </h3>
-                <div className="rounded-md border p-4">
-                  <div className="prose prose-slate max-w-none">
-                    <ReactMarkdown components={markdownComponents}>
-                      {result.reading}
-                    </ReactMarkdown>
+                <div className="rounded-md border p-4 relative overflow-hidden">
+                  <div className="prose prose-slate max-w-none relative">
+                    <div className="relative">
+                      <ReactMarkdown components={markdownComponents}>
+                        {getPartialReading(result.reading) + "..."}
+                      </ReactMarkdown>
+                      {/* Overlay for blur/fade effect */}
+                      <div
+                        className="absolute left-0 right-0 bottom-0 h-32 pointer-events-none"
+                        style={{
+                          background:
+                            "linear-gradient(to bottom, rgba(255,255,255,0) 40%, rgba(255,255,255,0.8) 80%, rgba(255,255,255,0.95) 100%)",
+                          backdropFilter: "blur(6px)",
+                          WebkitBackdropFilter: "blur(6px)",
+                        }}
+                      />
+                    </div>
+                    {/* Button sits above the overlay */}
+                    <div className="absolute left-0 right-0 bottom-4 flex justify-center pointer-events-auto">
+                      <Button asChild>
+                        <a href="/signup">Sign Up to See Full Reading</a>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
