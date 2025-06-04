@@ -21,22 +21,22 @@ export async function generateBaziReading(
  Please provide a concise Bazi reading that offers:
  1. 🌞 Who You Are — Day Master: [Element] ([Type] [Element])
  2. 🔑 Key strengths and weaknesses
- 3. 💼 Career & Success
- 4. ❤️ Love & Relationships
- 5. 🏥 Health & Energy
+ 3. 🏥 Health & Energy
+ 4. 💼 Career & Success
+ 5. ❤️ Love & Relationships
  6. ⛰️ Important life insights
 
-  ⏳ Timing: Life Flow Preview
+  ⏳ Timing: Life Flow Prediction
   When will things rise for me?
 
   🚀 [Year range]（[Chinese characters]）
-  [Brief outlook and suggestion about this period]
+  [Brief prediction and suggestion about this period]
 
   🌱 [Year range]（[Chinese characters]）
-  [Brief outlook and suggestion about this period]
+  [Brief prediction and suggestion about this period]
 
   🌳 [Year range]（[Chinese characters]）
-  [Brief outlook and suggestion about this period]
+  [Brief prediction and suggestion about this period]
 
 
  Keep the tone professional but accessible, give short description then bullet points. Focus only on insights that can be directly derived from the BaZi chart.

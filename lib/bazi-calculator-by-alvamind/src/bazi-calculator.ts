@@ -1,5 +1,5 @@
 // src/bazi-calculator.ts
-import { DateMappingLoader } from "./utils/date-mapping";
+import { DateMappingLoader, getDateMappingLoader } from "./utils/date-mapping";
 import { PillarCalculator } from "./utils/pillar-calculator";
 import { AnalysisCalculator } from "./utils/analysis-calculator";
 import type {
@@ -20,7 +20,8 @@ export class BaziCalculator {
     private hour: number,
     private gender: GenderType = "male"
   ) {
-    const dateMappingLoader = new DateMappingLoader();
+    // OPTIMIZATION: Use singleton DateMappingLoader instead of creating new instance
+    const dateMappingLoader = getDateMappingLoader();
     this.pillarCalculator = new PillarCalculator(dateMappingLoader);
     this.analysisCalculator = new AnalysisCalculator();
   }

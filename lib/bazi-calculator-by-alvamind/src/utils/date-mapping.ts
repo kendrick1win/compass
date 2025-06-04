@@ -56,31 +56,78 @@ function getDataPath(filename: string): string {
 }
 
 export class DateMappingLoader {
-  private dateMappings: DateMappings;
+  // CACHING: Store loaded data in memory to avoid re-parsing JSON
+  private dateMappings: DateMappings | null = null;
+  // CACHING: Store individual lookup results to avoid repeated object traversal
+  private cache = new Map<string, any>();
 
   constructor(
     private mappingsPath: string = getDataPath("dates_mapping.json")
-  ) {
-    this.dateMappings = this.loadDateMappings();
-  }
+  ) {}
 
+  // LAZY LOADING: Only loads the JSON file when first accessed, not during instantiation
   private loadDateMappings(): DateMappings {
-    try {
-      return JSON.parse(readFileSync(this.mappingsPath, "utf-8"));
-    } catch (error) {
-      console.error("Failed to load date mappings:", error);
-      throw error;
+    // LAZY LOADING: Check if data is already loaded before reading from disk
+    if (!this.dateMappings) {
+      console.log("FIRST LOAD: Loading date mappings from disk");
+      console.time("Date mappings load time");
+      // LAZY LOADING: File is only read from disk on first access
+      this.dateMappings = JSON.parse(readFileSync(this.mappingsPath, "utf-8"));
+      console.timeEnd("Date mappings load time");
+      console.log("Date mappings loaded and cached in memory");
+    } else {
+      console.log(
+        "⚡ CACHE HIT: Using pre-loaded date mappings (no disk access)"
+      );
     }
+    // CACHING: Return the cached parsed data instead of re-reading file
+    return this.dateMappings!; // Non-null assertion since we just loaded it
   }
 
   public getMapping(year: number, month: number, day: number) {
-    if (
-      !this.dateMappings[year] ||
-      !this.dateMappings[year][month] ||
-      !this.dateMappings[year][month][day]
-    ) {
+    // CACHING: Create unique key for this specific date lookup
+    const cacheKey = `${year}-${month}-${day}`;
+
+    // CACHING: Check if we've already looked up this exact date before
+    if (this.cache.has(cacheKey)) {
+      // CACHING: Return cached result instead of traversing the data structure again
+      return this.cache.get(cacheKey);
+    }
+
+    // LAZY LOADING: Data is only loaded when we actually need to perform a lookup
+    const mappings = this.loadDateMappings();
+
+    if (!mappings[year]?.[month]?.[day]) {
       throw new Error(`No date mapping found for ${year}-${month}-${day}`);
     }
-    return this.dateMappings[year][month][day];
+
+    const result = mappings[year][month][day];
+    // CACHING: Store the lookup result for future requests of the same date
+    this.cache.set(cacheKey, result);
+    return result;
   }
+
+  // Optimization Statistics.
+  public getOptimizationStats() {
+    return {
+      cacheSize: this.cache.size,
+      isLoaded: this.dateMappings !== null,
+      memoryUsage: process.memoryUsage(),
+    };
+  }
+}
+
+// SINGLETON: Create a single shared instance across all API requests
+let globalDateMappingLoader: DateMappingLoader | null = null;
+
+export function getDateMappingLoader(): DateMappingLoader {
+  if (!globalDateMappingLoader) {
+    console.log(
+      "CREATING SINGLETON: First time creating DateMappingLoader instance"
+    );
+    globalDateMappingLoader = new DateMappingLoader();
+  } else {
+    console.log("REUSING SINGLETON: Using existing DateMappingLoader instance");
+  }
+  return globalDateMappingLoader;
 }

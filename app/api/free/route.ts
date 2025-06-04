@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-
 import { OpenAI } from "openai";
 import { generateBaziData } from "./(components)/calculator";
 import { generateBaziReading } from "./(components)/generateReading";
+import { getDateMappingLoader } from "../../../lib/bazi-calculator-by-alvamind/src/utils/date-mapping";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -14,6 +14,13 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { year, month, day, hour, gender } = body;
 
+    // OPTIMIZATION: Get singleton DateMappingLoader before calculations
+    const dateLoader = getDateMappingLoader();
+    console.log(
+      "Pre-calculation Cache Stats:",
+      dateLoader.getOptimizationStats()
+    );
+
     // Generate Bazi data using the helper
     const { analysis, chineseCharacters } = generateBaziData(
       year,
@@ -21,6 +28,11 @@ export async function POST(req: NextRequest) {
       day,
       hour,
       gender
+    );
+
+    console.log(
+      "Post-calculation Cache Stats:",
+      dateLoader.getOptimizationStats()
     );
 
     // AI Reading
