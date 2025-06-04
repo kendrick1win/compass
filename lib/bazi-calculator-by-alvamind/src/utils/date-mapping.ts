@@ -59,8 +59,10 @@ export class DateMappingLoader {
   // Lazy load: only read file when first needed
   private loadDateMappings(): DateMappings {
     if (!this.dateMappings) {
+      console.log("first mappings.");
       this.dateMappings = JSON.parse(readFileSync(this.mappingsPath, "utf-8"));
     }
+    console.log("return mappings");
     return this.dateMappings!;
   }
 
