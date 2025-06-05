@@ -3,7 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import Header from "@/components/custom/header";
 import { Button } from "@/components/ui/button";
-import DailyReadingTest from "./(components)/DailyReading";
+import DailyReading from "./(components)/DailyReading";
 import SubscribeCard from "../(components)/subscription/subscribe";
 
 export default async function Dashboard() {
@@ -16,6 +16,25 @@ export default async function Dashboard() {
 
   const userEmail = data.user.email || "";
   const displayName = userEmail.split("@")[0];
+
+  // Check if the user has a row in the profile table
+  const { data: profileData, error: profileError } = await supabase
+    .from("profile")
+    .select("id")
+    .eq("user_id", data.user.id)
+    .single();
+
+  const hasProfile = !profileError && profileData;
+
+  // Check if the user is subscribed in the subscriptions table
+  const { data: subscriptionData, error: subscriptionError } = await supabase
+    .from("subscriptions")
+    .select("status")
+    .eq("user_id", data.user.id)
+    .single();
+
+  const isSubscribed =
+    !subscriptionError && subscriptionData?.status === "active";
 
   return (
     <>
@@ -30,8 +49,14 @@ export default async function Dashboard() {
               Go To Your Free Reading
             </Button>
           </Link>
-          <SubscribeCard userId={data.user.id} />
-          <DailyReadingTest />
+          {isSubscribed ? (
+            <DailyReading />
+          ) : (
+            <Button className="w-full py-6 text-lg" disabled>
+              Daily Reading (Premium Subscriber)
+            </Button>
+          )}
+          {!isSubscribed && <SubscribeCard userId={data.user.id} />}
         </div>
       </main>
     </>

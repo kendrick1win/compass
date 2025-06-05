@@ -45,7 +45,7 @@ const markdownComponents: Components = {
   ),
 };
 
-export default function DailyReadingTest() {
+export default function DailyReading() {
   const [reading, setReading] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);

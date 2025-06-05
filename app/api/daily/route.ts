@@ -21,6 +21,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Check if the user is subscribed
+    const { data: subscription, error: subscriptionError } = await supabase
+      .from("subscriptions")
+      .select("status")
+      .eq("user_id", user.id)
+      .single();
+
+    if (subscriptionError || subscription?.status !== "active") {
+      return NextResponse.json(
+        { error: "Subscription required" },
+        { status: 403 }
+      );
+    }
+
     // Fetch user's profile data
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
