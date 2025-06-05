@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import Header from "@/components/custom/header";
 import { Button } from "@/components/ui/button";
 import DailyReadingTest from "./(components)/DailyReading";
+import SubscribeCard from "../(components)/subscription/subscribe";
 
 export default async function Dashboard() {
   const supabase = await createClient();
@@ -29,6 +30,7 @@ export default async function Dashboard() {
               Go To Your Free Reading
             </Button>
           </Link>
+          <SubscribeCard userId={data.user.id} />
           <DailyReadingTest />
         </div>
       </main>

@@ -51,13 +51,49 @@ export async function GET(req: NextRequest) {
             Chinese Characters: ${profile.chinese_characters}
             Analysis: ${JSON.stringify(profile.analysis)}
             
-            Focus on:
-            1. General outlook for the day
-            2. Activities to embrace or avoid
-            3. Potential opportunities or challenges
+            Format the response EXACTLY as follows:
             
-            Keep it practical.Write personality profile paragraphs using "you" language. 
-            Make it personal and insightful. No questions or disclaimers. Use markdown format to display headers with emojis. Add a section for DO's and DONT'S.`,
+            # 🌟 TODAY'S READING
+            
+            Lucky Number: [generate an appropriate number 1-9]
+            
+            Lucky Colour: [generate an appropriate color]
+            
+            Quote of the day: "[generate an inspiring quote]"
+            
+            ## General Outlook for ${dateStr}
+            [Write exactly 2 concise paragraphs using "you" language. Make it personal and insightful. No questions or disclaimers.]
+            
+            ## 🌱 Activities To Embrace or Avoid
+            **DO's:**
+            • [bullet point 1]
+            • [bullet point 2] 
+            • [bullet point 3]
+            
+            **DONT'S:**
+            • [bullet point 1]
+            • [bullet point 2]
+            • [bullet point 3]
+            
+            ## 🎁 Potential Opportunities or Challenges (${dateStr})
+            **Opportunities:**
+
+            🌟 [opportunity 1]
+            
+            💡 [opportunity 2]
+            
+            🤝 [opportunity 3]
+            
+            **Challenges:**
+
+            🔥 [challenge 1]
+            
+            🕰 [challenge 2]
+            
+            🌀 [challenge 3]
+            
+            Keep it practical. Write personality profile paragraphs using "you" language. 
+            Make it personal and insightful. No questions or disclaimers. Use markdown format to display headers with emojis. Add a section for DO's and DONT'S. Use different emojis each time for opportunities and challenges to keep the content fresh and varied.`,
         },
       ],
     });

@@ -108,32 +108,38 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "system",
-          content: `You are a Bazi expert providing relationship-specific compatibility readings based on two people's birth charts. Use warm and personal langauge like 'you'(user) and 'they'(partner). Generate reading tailored to relationtype: ${relationshipType}`,
+          content: `You are a Bazi expert providing relationship-specific compatibility readings. Use conversational, direct language with "You" for the user and "They" for the partner. 
+          Focus on elemental dynamics and practical relationship insights. Keep tone warm, postive, and honest about challenges. Generate reading tailored to relationtype: ${relationshipType}`,
         },
         {
           role: "user",
-          content: `Generate a compatibility reading for these two peoples' Bazi Charts.
+          content: `Generate a compatibility reading for these two Bazi charts:
 
             Person 1 (User):
             Chinese Characters: ${profile.chinese_characters}
             Analysis: ${JSON.stringify(profile.analysis)}
 
-            Person 2:
+            Person 2 (Partner):
             Chinese Characters: ${partnerChart.chineseCharacters}
             Analysis: ${JSON.stringify(partnerChart.analysis)}
             
-            Include:
-            1. Individual chart characteristics
-            2. Element interactions between charts
-            3. Relationship dynamics based on ${relationshipType} context
-            4. Specific recommendations for harmony
-            
-            Format with markdown and emojis for headers. Include sections for:
-            - 🔮 Overall Compatibility
-            - ⚡ Energy Dynamics
-            - 🤝 Relationship Wisdom
-            - ✨ Growth Opportunities
-            - 📝 Action Steps`,
+            Relationship Type: ${relationshipType}
+
+            Create a natural, conversational reading using "You" for the user and "They" for the partner. Include these key areas but let the content flow organically:
+
+            **PAIR READING**
+
+            **Elemental Interaction:** Start with the elemental dynamic (e.g., "土 vs 水 — Control Cycle") and explain how this plays out between them practically.
+
+            **Communication Style:** How they express themselves differently and what this means for understanding each other.
+
+            **Emotional Compatibility:** Describe their emotional needs and chemistry.
+
+            **Hidden Tensions:** What underlying conflicts might arise based on their elemental natures.
+
+            **Growth Potential Together:** What they can learn from each other and how they evolve together.
+
+            Use appropriate emojis in your headings. Keep tone warm, postive, but honest. Let each reading be unique to their specific elemental combination and relationship dynamics. Avoid formulaic language - make it feel like personalized insight.`,
         },
       ],
     });

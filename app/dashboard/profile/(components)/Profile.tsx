@@ -20,16 +20,8 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Calendar,
-  Clock,
-  User,
-  FileText,
-  ChevronRight,
-  Loader2,
-} from "lucide-react";
+
+import { Calendar, Clock, User, ChevronRight, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { BaziChart } from "./BaziChart";
 
@@ -142,7 +134,7 @@ export default function ProfileForm() {
         gender: formData.get("gender"),
       };
 
-      const response = await fetch("/api/free", {
+      const response = await fetch("/api/profile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -200,6 +192,8 @@ export default function ProfileForm() {
                       type="number"
                       id="year"
                       name="year"
+                      min="1900"
+                      max="2025"
                       required
                       placeholder="Birth year"
                     />
