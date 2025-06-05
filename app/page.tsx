@@ -1,11 +1,11 @@
-import CTASection from "./(components)/cta";
+import CTASection from "./(components)/landing_page/cta";
 import LandingNav from "./(components)/nav/landing-nav";
-import HeroSection from "./(components)/hero";
-import FeaturesSection from "./(components)/features";
-import ProcedureSection from "./(components)/procedure";
-import FooterSection from "./(components)/footer";
+import HeroSection from "./(components)/landing_page/hero";
+import FeaturesSection from "./(components)/landing_page/features";
+import ProcedureSection from "./(components)/landing_page/procedure";
+import FooterSection from "./(components)/landing_page/footer";
 import Try from "./(components)/try";
-import WhatIsBaziSection from "./(components)/explain-bazi";
+import WhatIsBaziSection from "./(components)/landing_page/explain-bazi";
 export default function LandingPage() {
   return (
     <>
