@@ -7,7 +7,7 @@ type Props = {
 
 export const subscribeAction = async ({ userId }: Props) => {
   // Get the base URL with fallback
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://compass-indol.vercel.app';
 
   // Ensure the URL has a protocol
   const fullBaseUrl = baseUrl.startsWith("http")
