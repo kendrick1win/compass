@@ -24,7 +24,6 @@ import {
   Calendar,
   Clock,
   User,
-  FileText,
   ChevronRight,
   Loader2,
   Users,
@@ -35,6 +34,8 @@ import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
 import Loading from "./(components)/loading";
 import Header from "@/components/custom/header";
+import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
 
 const markdownComponents: Components = {
   h1: ({ node, ...props }) => (
@@ -60,7 +61,11 @@ const markdownComponents: Components = {
   ),
 };
 
-export default function PairReadingPage() {
+export default async function PairReadingPage() {
+  const supabase = await createClient();
+
+
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reading, setReading] = useState<string | null>(null);
