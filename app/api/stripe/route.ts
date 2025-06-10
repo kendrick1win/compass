@@ -6,13 +6,13 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
 export async function POST(request: NextRequest) {
-  console.log("🔥 Webhook received");
+  console.log("Webhook received");
 
   const body = await request.text();
   const signature = (await headers()).get("Stripe-Signature") as string;
 
-  console.log("📝 Body length:", body.length);
-  console.log("🔑 Signature present:", !!signature);
+  console.log("Body length:", body.length);
+  console.log("Signature present:", !!signature);
 
   let event: Stripe.Event;
 
@@ -22,9 +22,9 @@ export async function POST(request: NextRequest) {
       signature,
       process.env.STRIPE_SIGNING_KEY!
     );
-    console.log("✅ Webhook verified, event type:", event.type);
+    console.log("Webhook verified, event type:", event.type);
   } catch (error) {
-    console.error("❌ Stripe webhook verification failed:", error);
+    console.error("Stripe webhook verification failed");
     return new NextResponse("Invalid signature", { status: 400 });
   }
 
@@ -32,22 +32,16 @@ export async function POST(request: NextRequest) {
     event.type === "checkout.session.completed" &&
     event.data.object.payment_status === "paid"
   ) {
-    console.log("✅ Payment completed");
+    console.log("Payment completed");
 
     const session = event.data.object as Stripe.Checkout.Session;
     const metadata = session.metadata;
     const userId = metadata?.userId;
 
-    console.log("👤 User ID from metadata:", userId);
-    console.log("🔍 Session data:", {
-      id: session.id,
-      customer: session.customer,
-      subscription: session.subscription,
-      payment_status: session.payment_status,
-    });
+    console.log("User ID present:", !!userId);
 
     if (!userId) {
-      console.warn("⚠️ Missing userId in metadata");
+      console.warn("Missing userId in metadata");
       return new NextResponse("Missing metadata", { status: 400 });
     }
 
@@ -56,36 +50,31 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    console.log("📊 Attempting database update...");
+    console.log("Attempting database update...");
 
-    // Insert or update subscription record
+    // Insert new subscription record (allows duplicates)
     const { data, error } = await supabase
       .from("subscriptions")
-      .upsert(
-        {
-          user_id: userId,
-          stripe_subscription_id: session.subscription as string,
-          stripe_customer_id: session.customer as string,
-          status: "active",
-          current_period_end: new Date(
-            Date.now() + 7 * 24 * 60 * 60 * 1000
-          ).toISOString(), // 7 days from now
-          created_at: new Date().toISOString(),
-        },
-        {
-          onConflict: "user_id", // This tells Supabase to update if user_id already exists
-        }
-      )
+      .insert({
+        user_id: userId,
+        stripe_subscription_id: session.subscription as string,
+        stripe_customer_id: session.customer as string,
+        status: "active",
+        current_period_end: new Date(
+          Date.now() + 7 * 24 * 60 * 60 * 1000
+        ).toISOString(), // 7 days from now
+        created_at: new Date().toISOString(),
+      })
       .select();
 
     if (error) {
-      console.error("❌ Supabase update failed:", error);
+      console.error("Supabase insert failed");
       return new NextResponse("DB error", { status: 500 });
     } else {
-      console.log("✅ Database updated successfully:", data);
+      console.log("Database updated successfully");
     }
   } else {
-    console.log("ℹ️ Event not handled:", event.type);
+    console.log("Event not handled:", event.type);
   }
 
   revalidatePath("/", "layout");
