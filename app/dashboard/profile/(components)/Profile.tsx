@@ -30,6 +30,13 @@ interface BaziResult {
   chineseCharacters: string;
   reading: string;
   analysis: any;
+  birthInfo?: {
+    year: number;
+    month: number;
+    day: number;
+    hour: number;
+    gender: string;
+  };
 }
 
 import type { Components } from "react-markdown";
@@ -108,6 +115,13 @@ export default function ProfileForm() {
               chineseCharacters: profile.chinese_characters,
               reading: profile.reading,
               analysis: profile.analysis,
+              birthInfo: {
+                year: profile.year,
+                month: profile.month,
+                day: profile.day,
+                hour: profile.hour,
+                gender: profile.gender,
+              },
             });
             setShowForm(false);
           }
@@ -143,7 +157,11 @@ export default function ProfileForm() {
       });
 
       const result = await response.json();
-      setResult(result);
+      // Store birth info with the result
+      setResult({
+        ...result,
+        birthInfo: data,
+      });
       setActiveTab("chart");
       setShowForm(false);
     } catch (error) {
@@ -151,6 +169,14 @@ export default function ProfileForm() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper function to format the birthday
+  const formatBirthday = (birthInfo: any) => {
+    if (!birthInfo) return "";
+    const { year, month, day, hour, gender } = birthInfo;
+    const formattedHour = hour.toString().padStart(2, "0") + ":00";
+    return `${month}/${day}/${year} at ${formattedHour} (${gender})`;
   };
 
   return (
@@ -302,8 +328,13 @@ export default function ProfileForm() {
             {/* Changed from opacity-25 to bg-white/25 */}
             <CardHeader className="bg-primary/3 text-center">
               <CardTitle className="text-2xl font-semibold">
-                Your BaZi Chart
+                Your BaZi Chartz
               </CardTitle>
+              {result.birthInfo && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Born: {formatBirthday(result.birthInfo)}
+                </p>
+              )}
               <CardDescription>
                 Your Four Pillars of Destiny in Chinese Characters
               </CardDescription>

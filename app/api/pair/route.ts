@@ -125,21 +125,23 @@ export async function POST(req: NextRequest) {
             
             Relationship Type: ${relationshipType}
 
-            Create a natural, conversational reading using "You" for the user and "They" for the partner. Include these key areas but let the content flow organically:
+            Create a natural, conversational reading using "You" for the user and "They" for the partner. Include these key areas with the specified format:
 
             **PAIR READING**
 
-            **Elemental Interaction:** Start with the elemental dynamic (e.g., "土 vs 水 — Control Cycle") and explain how this plays out between them practically.
+            **Overview:** Start with a short paragraph (3-4 sentences) that captures the essence of this pairing and their overall dynamic.
 
-            **Communication Style:** How they express themselves differently and what this means for understanding each other.
+            **Elemental Interaction:** Start with the elemental dynamic (e.g., "土 vs 水 — Control Cycle") then provide bullet points explaining how this plays out between them practically.
 
-            **Emotional Compatibility:** Describe their emotional needs and chemistry.
+            **Communication Style:** Use bullet points to describe how they express themselves differently and what this means for understanding each other.
 
-            **Hidden Tensions:** What underlying conflicts might arise based on their elemental natures.
+            **Emotional Compatibility:** Use bullet points to describe their emotional needs and chemistry.
 
-            **Growth Potential Together:** What they can learn from each other and how they evolve together.
+            **Hidden Tensions:** Use bullet points to explain what underlying conflicts might arise based on their elemental natures.
 
-            Use appropriate emojis in your headings. Keep tone warm, postive, but honest. Let each reading be unique to their specific elemental combination and relationship dynamics. Avoid formulaic language - make it feel like personalized insight.`,
+            **Growth Potential Together:** Use bullet points to describe what they can learn from each other and how they evolve together.
+
+            Format each section (except Overview) with bullet points using "•" symbols. Add a blank line between each bullet point for better readability. Use appropriate emojis in your headings. Keep tone warm, positive, but honest. Let each reading be unique to their specific elemental combination and relationship dynamics. Avoid formulaic language - make it feel like personalized insight.`,
         },
       ],
     });

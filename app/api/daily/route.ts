@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
             
             # 🌟 TODAY'S READING
             
-            Lucky Number: [generate an appropriate number 1-9]
+            Lucky Number: [generate a number 1-9]
             
             Lucky Colour: [generate an appropriate color]
             

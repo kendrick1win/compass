@@ -34,8 +34,9 @@ import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
 import Loading from "./(components)/loading";
 import Header from "@/components/custom/header";
-import { redirect } from "next/navigation";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
+// Use the new local BaziChart component
+import { BaziChart } from "./(components)/BaziChart";
 
 const markdownComponents: Components = {
   h1: ({ node, ...props }) => (
@@ -61,14 +62,14 @@ const markdownComponents: Components = {
   ),
 };
 
-export default async function PairReadingPage() {
-  const supabase = await createClient();
-
-
+export default function PairReadingPage() {
+  const supabase = createClient();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reading, setReading] = useState<string | null>(null);
+  const [pairData, setPairData] = useState<any | null>(null); // Store the pair data
+  const [partnerChart, setPartnerChart] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -101,11 +102,32 @@ export default async function PairReadingPage() {
       }
 
       setReading(data.reading);
+      // Store the request data for display
+      setPairData(request);
+      setPartnerChart(data.partnerChineseCharacters);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper function to format relationship type
+  const formatRelationshipType = (type: string) => {
+    return type.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+  };
+
+  // Helper function to format birthdate
+  const formatBirthInfo = (
+    birthdate: string,
+    birthtime: number,
+    gender: string
+  ) => {
+    const date = new Date(birthdate);
+    const formattedTime = birthtime.toString().padStart(2, "0") + ":00";
+    return `${
+      date.getMonth() + 1
+    }/${date.getDate()}/${date.getFullYear()} at ${formattedTime} (${gender})`;
   };
 
   if (loading) {
@@ -115,6 +137,8 @@ export default async function PairReadingPage() {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <Header />
+
+      {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="text-center sm:text-left space-y-2">
           <h1 className="text-4xl font-bold tracking-tight">
@@ -136,131 +160,143 @@ export default async function PairReadingPage() {
         </Link>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
-            <span>Partner Information</span>
-          </CardTitle>
-          <CardDescription>
-            Enter your partner's details to generate a compatibility reading
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form id="pair-form" onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="birthdate" className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  Birth Date
-                </Label>
-                <Input
-                  id="birthdate"
-                  name="birthdate"
-                  type="date"
-                  required
-                  className="[&::-webkit-calendar-picker-indicator]:opacity-50 hover:[&::-webkit-calendar-picker-indicator]:opacity-100"
-                />
-              </div>
+      {/* Form Section - Only show if no reading */}
+      {!reading && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              <span>Partner Information</span>
+            </CardTitle>
+            <CardDescription>
+              Enter your partner's details to generate a compatibility reading
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form id="pair-form" onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="partnerName"
+                    className="flex items-center gap-2"
+                  >
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    Partner's Name
+                  </Label>
+                  <Input
+                    id="partnerName"
+                    name="partnerName"
+                    type="text"
+                    required
+                    placeholder="Enter partner's name"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="birthtime" className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  Birth Hour (0-23)
-                </Label>
-                <Input
-                  id="birthtime"
-                  name="birthtime"
-                  type="number"
-                  min="0"
-                  max="23"
-                  required
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="birthdate"
+                    className="flex items-center gap-2"
+                  >
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    Birth Date
+                  </Label>
+                  <Input
+                    id="birthdate"
+                    name="birthdate"
+                    type="date"
+                    required
+                    className="[&::-webkit-calendar-picker-indicator]:opacity-50 hover:[&::-webkit-calendar-picker-indicator]:opacity-100"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="gender" className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  Gender
-                </Label>
-                <Select name="gender" defaultValue="male">
-                  <SelectTrigger id="gender">
-                    <SelectValue placeholder="Select gender" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="birthtime"
+                    className="flex items-center gap-2"
+                  >
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    Birth Hour (0-23)
+                  </Label>
+                  <Input
+                    id="birthtime"
+                    name="birthtime"
+                    type="number"
+                    min="0"
+                    max="23"
+                    required
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="relationshipType"
-                  className="flex items-center gap-2"
-                >
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  Relationship Type
-                </Label>
-                <Select name="relationshipType" defaultValue="friend">
-                  <SelectTrigger id="relationshipType">
-                    <SelectValue placeholder="Select relationship type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="romantic_partner">
-                      Romantic Partner
-                    </SelectItem>
-                    <SelectItem value="family_member">Family Member</SelectItem>
-                    <SelectItem value="friend">Friend</SelectItem>
-                    <SelectItem value="business_partner">
-                      Business Partner
-                    </SelectItem>
-                    <SelectItem value="colleague">Colleague</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="gender" className="flex items-center gap-2">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    Gender
+                  </Label>
+                  <Select name="gender" defaultValue="male">
+                    <SelectTrigger id="gender">
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="partnerName"
-                  className="flex items-center gap-2"
-                >
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  Partner's Name
-                </Label>
-                <Input
-                  id="partnerName"
-                  name="partnerName"
-                  type="text"
-                  required
-                  placeholder="Enter partner's name"
-                />
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="relationshipType"
+                    className="flex items-center gap-2"
+                  >
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                    Relationship Type
+                  </Label>
+                  <Select name="relationshipType" defaultValue="friend">
+                    <SelectTrigger id="relationshipType">
+                      <SelectValue placeholder="Select relationship type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="romantic_partner">
+                        Romantic Partner
+                      </SelectItem>
+                      <SelectItem value="family_member">
+                        Family Member
+                      </SelectItem>
+                      <SelectItem value="friend">Friend</SelectItem>
+                      <SelectItem value="business_partner">
+                        Business Partner
+                      </SelectItem>
+                      <SelectItem value="colleague">Colleague</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button
-            type="submit"
-            form="pair-form"
-            disabled={loading}
-            className="w-full sm:w-auto"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                Generate Reading
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </>
-            )}
-          </Button>
-        </CardFooter>
-      </Card>
+            </form>
+          </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button
+              type="submit"
+              form="pair-form"
+              disabled={loading}
+              className="w-full sm:w-auto"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  Generate Reading
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
 
+      {/* Error Section */}
       {error && (
         <Card className="border-red-200 bg-red-50">
           <CardContent className="pt-6">
@@ -283,24 +319,99 @@ export default async function PairReadingPage() {
         </Card>
       )}
 
-      {reading && (
-        <Card className="overflow-hidden border-primary/20">
-          <CardHeader className="bg-primary/5">
-            <CardTitle className="text-2xl font-semibold text-center">
+      {/* Results Section */}
+      {reading && pairData && (
+        <>
+          <div className="text-center space-y-2">
+            <h1 className="text-4xl font-bold tracking-tight">
               Your Compatibility Reading
-            </CardTitle>
-            <CardDescription className="text-center">
-              Understanding Your Relationship Dynamics
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="prose prose-slate max-w-none">
-              <ReactMarkdown components={markdownComponents}>
-                {reading}
-              </ReactMarkdown>
-            </div>
-          </CardContent>
-        </Card>
+            </h1>
+            <p className="text-muted-foreground">
+              Below is your personalized relationship analysis
+            </p>
+          </div>
+
+          {/* Partner Chart Section */}
+          {partnerChart && (
+            <Card className="border-primary/20">
+              <CardHeader className="bg-primary/3 text-center">
+                <CardTitle className="text-2xl font-semibold">
+                  {pairData.partnerName}'s BaZi Chart
+                </CardTitle>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Born:{" "}
+                  {formatBirthInfo(
+                    pairData.partnerBirthdate,
+                    pairData.partnerBirthtime,
+                    pairData.partnerGender
+                  )}
+                </p>
+                <CardDescription>
+                  Your partner's Four Pillars of Destiny in Chinese Characters
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6">
+                <BaziChart chineseCharacters={partnerChart} />
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Partner Information Card */}
+          <Card className="border-primary/20">
+            <CardHeader className="bg-primary/3 text-center">
+              <CardTitle className="text-2xl font-semibold">
+                Partner Information
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-2">
+                {pairData.partnerName} - Born:{" "}
+                {formatBirthInfo(
+                  pairData.partnerBirthdate,
+                  pairData.partnerBirthtime,
+                  pairData.partnerGender
+                )}
+              </p>
+              <CardDescription>
+                Relationship Type:{" "}
+                {formatRelationshipType(pairData.relationshipType)}
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          {/* Reading Section */}
+          <Card className="border-primary/20">
+            <CardHeader className="bg-primary/3 text-center">
+              <CardTitle className="text-2xl font-semibold">
+                Your Compatibility Analysis
+              </CardTitle>
+              <CardDescription>
+                Detailed interpretation of your relationship dynamics
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="prose prose-slate max-w-none">
+                <ReactMarkdown components={markdownComponents}>
+                  {reading}
+                </ReactMarkdown>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Generate New Reading Button */}
+          <div className="text-center">
+            <Button
+              onClick={() => {
+                setReading(null);
+                setPairData(null);
+                setPartnerChart(null);
+                setError(null);
+              }}
+              variant="outline"
+              className="mx-auto"
+            >
+              Generate New Reading
+            </Button>
+          </div>
+        </>
       )}
     </div>
   );
