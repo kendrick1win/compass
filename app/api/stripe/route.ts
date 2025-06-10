@@ -61,18 +61,22 @@ export async function POST(request: NextRequest) {
     // Insert or update subscription record
     const { data, error } = await supabase
       .from("subscriptions")
-      .upsert({
-        user_id: userId,
-        stripe_subscription_id: session.subscription as string,
-        stripe_customer_id: session.customer as string,
-        status: "active",
-        current_period_end: new Date(
-          Date.now() + 7 * 24 * 60 * 60 * 1000
-        ).toISOString(), // 7 days from now
-        created_at: new Date().toISOString(),
-      })
-      .eq("user_id", userId)
-      .select(); // Add select to see what was inserted
+      .upsert(
+        {
+          user_id: userId,
+          stripe_subscription_id: session.subscription as string,
+          stripe_customer_id: session.customer as string,
+          status: "active",
+          current_period_end: new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+          ).toISOString(), // 7 days from now
+          created_at: new Date().toISOString(),
+        },
+        {
+          onConflict: "user_id", // This tells Supabase to update if user_id already exists
+        }
+      )
+      .select();
 
     if (error) {
       console.error("❌ Supabase update failed:", error);

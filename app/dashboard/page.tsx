@@ -31,10 +31,13 @@ export default async function Dashboard() {
     .from("subscriptions")
     .select("status")
     .eq("user_id", data.user.id)
-    .single();
+    .order("created_at", { ascending: false }); // Get most recent first
 
   const isSubscribed =
-    !subscriptionError && subscriptionData?.status === "active";
+    !subscriptionError &&
+    subscriptionData &&
+    subscriptionData.length > 0 &&
+    subscriptionData[0]?.status === "active";
 
   return (
     <>
@@ -49,14 +52,17 @@ export default async function Dashboard() {
               Go To Your Free Reading
             </Button>
           </Link>
+
           {isSubscribed ? (
             <DailyReading />
           ) : (
-            <Button className="w-full py-6 text-lg" disabled>
-              Daily Reading (Premium Subscriber)
-            </Button>
+            <>
+              <Button className="w-full py-6 text-lg" disabled>
+                Daily Reading (Premium Only)
+              </Button>
+              <SubscribeCard userId={data.user.id} />
+            </>
           )}
-          {!isSubscribed && <SubscribeCard userId={data.user.id} />}
         </div>
       </main>
     </>
