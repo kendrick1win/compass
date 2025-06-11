@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { PairReadingRequest } from "./types";
 import {
   Card,
@@ -64,15 +65,68 @@ const markdownComponents: Components = {
 
 export default function PairReadingPage() {
   const supabase = createClient();
+  const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reading, setReading] = useState<string | null>(null);
   const [pairData, setPairData] = useState<any | null>(null); // Store the pair data
   const [partnerChart, setPartnerChart] = useState<string | null>(null);
+  const [isSubscribed, setIsSubscribed] = useState<boolean | null>(null);
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
+
+  // Check subscription status on component mount
+  useEffect(() => {
+    const checkSubscription = async () => {
+      try {
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
+
+        if (userError || !userData?.user) {
+          router.push("/login");
+          return;
+        }
+
+        // Check if the user is subscribed
+        const { data: subscriptionData, error: subscriptionError } =
+          await supabase
+            .from("subscriptions")
+            .select("status")
+            .eq("user_id", userData.user.id)
+            .order("created_at", { ascending: false });
+
+        const hasActiveSubscription =
+          !subscriptionError &&
+          subscriptionData &&
+          subscriptionData.length > 0 &&
+          subscriptionData[0]?.status === "active";
+
+        setIsSubscribed(hasActiveSubscription);
+
+        if (!hasActiveSubscription) {
+          // Redirect to dashboard if not subscribed
+          router.push("/dashboard");
+        }
+      } catch (err) {
+        console.error("Error checking subscription:", err);
+        setError("Failed to verify subscription status");
+      } finally {
+        setCheckingSubscription(false);
+      }
+    };
+
+    checkSubscription();
+  }, [supabase, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Double-check subscription before allowing form submission
+    if (!isSubscribed) {
+      setError("Premium subscription required for pair readings");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -129,6 +183,35 @@ export default function PairReadingPage() {
       date.getMonth() + 1
     }/${date.getDate()}/${date.getFullYear()} at ${formattedTime} (${gender})`;
   };
+
+  // Show loading while checking subscription
+  if (checkingSubscription) {
+    return <Loading />;
+  }
+
+  // Show error if not subscribed (though they should be redirected)
+  if (isSubscribed === false) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 space-y-8">
+        <Header />
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="pt-6">
+            <p className="text-red-700 text-center">
+              Premium subscription required to access pair readings.
+            </p>
+            <div className="mt-4 text-center">
+              <Button
+                onClick={() => router.push("/dashboard")}
+                variant="outline"
+              >
+                Return to Dashboard
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (loading) {
     return <Loading />;
