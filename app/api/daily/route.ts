@@ -21,14 +21,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if the user is subscribed
-    const { data: subscription, error: subscriptionError } = await supabase
+    // Check if the user is subscribed - get most recent subscription
+    const { data: subscriptions, error: subscriptionError } = await supabase
       .from("subscriptions")
       .select("status")
       .eq("user_id", user.id)
-      .single();
+      .order("created_at", { ascending: false })
+      .limit(1);
 
-    if (subscriptionError || subscription?.status !== "active") {
+    if (
+      subscriptionError ||
+      !subscriptions ||
+      subscriptions.length === 0 ||
+      subscriptions[0]?.status !== "active"
+    ) {
       return NextResponse.json(
         { error: "Subscription required" },
         { status: 403 }
