@@ -52,6 +52,15 @@ export default async function Dashboard() {
               Go To Your Free Reading
             </Button>
           </Link>
+          {isSubscribed ? (
+            <Link href="/dashboard/pair" className="w-full max-w-4xl">
+              <Button className="w-full py-6 text-lg">Pair Reading</Button>
+            </Link>
+          ) : (
+            <Button className="w-full max-w-4xl py-6 text-lg" disabled>
+              Pair Reading (Premium Only)
+            </Button>
+          )}
 
           {isSubscribed ? (
             <DailyReading />
