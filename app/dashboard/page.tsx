@@ -39,6 +39,8 @@ export default async function Dashboard() {
     subscriptionData.length > 0 &&
     subscriptionData[0]?.status === "active";
 
+  const canAccessPremiumFeatures = hasProfile && isSubscribed;
+
   return (
     <>
       <Header />
@@ -52,24 +54,30 @@ export default async function Dashboard() {
               Go To Your Free Reading
             </Button>
           </Link>
-          {isSubscribed ? (
-            <Link href="/dashboard/pair" className="w-full max-w-4xl">
-              <Button className="w-full py-6 text-lg">Pair Reading</Button>
-            </Link>
-          ) : (
-            <Button className="w-full max-w-4xl py-6 text-lg" disabled>
-              Pair Reading (Premium Only)
-            </Button>
-          )}
-
-          {isSubscribed ? (
-            <DailyReading />
+          
+          {canAccessPremiumFeatures ? (
+            <>
+              <Link href="/dashboard/pair" className="w-full max-w-4xl">
+                <Button className="w-full py-6 text-lg">Pair Reading</Button>
+              </Link>
+              <DailyReading />
+            </>
           ) : (
             <>
+              <Button className="w-full max-w-4xl py-6 text-lg" disabled>
+                Pair Reading (Premium Only)
+              </Button>
               <Button className="w-full py-6 text-lg" disabled>
                 Daily Reading (Premium Only)
               </Button>
-              <SubscribeCard userId={data.user.id} />
+              {!hasProfile && (
+                <p className="text-center text-red-500">
+                  Please complete your profile to access premium features
+                </p>
+              )}
+              {hasProfile && !isSubscribed && (
+                <SubscribeCard userId={data.user.id} />
+              )}
             </>
           )}
         </div>
