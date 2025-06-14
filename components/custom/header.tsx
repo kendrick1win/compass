@@ -3,80 +3,107 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Home, Calendar, User, Users, LogOut } from "lucide-react";
 import { ModeToggle } from "../theme/ModeToggle";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/utils/supabase/client";
 import { redirect } from "next/navigation";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState<boolean | null>(null);
-  const supabase = createClientComponentClient();
+  const [canAccessPair, setCanAccessPair] = useState(false);
+  const supabase = createClient();
 
-  // Check subscription status on component mount
   useEffect(() => {
-    const checkSubscription = async () => {
+    const checkAccess = async (userId: string) => {
       try {
-        const { data: userData, error: userError } =
-          await supabase.auth.getUser();
+        const [profileRes, subscriptionRes] = await Promise.all([
+          supabase.from("profiles").select("id").eq("user_id", userId).single(),
+          supabase.from("subscriptions").select("status").eq("user_id", userId).order("created_at", { ascending: false })
+        ]);
 
-        if (userError || !userData?.user) {
-          return;
-        }
-
-        // Check if the user is subscribed
-        const { data: subscriptionData, error: subscriptionError } =
-          await supabase
-            .from("subscriptions")
-            .select("status")
-            .eq("user_id", userData.user.id)
-            .order("created_at", { ascending: false });
-
-        const hasActiveSubscription =
-          !subscriptionError &&
-          subscriptionData &&
-          subscriptionData.length > 0 &&
-          subscriptionData[0]?.status === "active";
-
-        setIsSubscribed(hasActiveSubscription);
-      } catch (err) {
-        console.error("Error checking subscription:", err);
-        setIsSubscribed(false);
+        const hasProfile = !profileRes.error && profileRes.data;
+        const isSubscribed = !subscriptionRes.error && 
+          subscriptionRes.data && 
+          subscriptionRes.data.length > 0 && 
+          subscriptionRes.data[0]?.status === "active";
+        
+        setCanAccessPair(hasProfile && isSubscribed);
+      } catch (error) {
+        setCanAccessPair(false);
       }
     };
 
-    checkSubscription();
-  }, [supabase]);
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user?.id) {
+        await checkAccess(session.user.id);
+      } else {
+        setCanAccessPair(false);
+      }
+    });
+
+    // Initial check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user?.id) {
+        checkAccess(session.user.id);
+      }
+    });
+
+    // Set up realtime subscription
+    const channel = supabase
+      .channel('subscription_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'subscriptions'
+        },
+        () => {
+          supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session?.user?.id) {
+              checkAccess(session.user.id);
+            }
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     redirect("/");
   };
 
-  const PairNavItem = ({ isMobile = false }: { isMobile?: boolean }) => {
-    const baseClasses = isMobile
+  const PairLink = ({ isMobile = false }: { isMobile?: boolean }) => {
+    const baseClasses = isMobile 
       ? "flex items-center gap-2 p-2 hover:bg-muted rounded-sm"
       : "flex items-center gap-2";
 
-    if (isSubscribed) {
+    if (canAccessPair) {
       return (
         <Link
           href="/dashboard/pair"
           className={`${baseClasses} text-muted-foreground hover:text-foreground transition-colors`}
         >
           <Users className="h-4 w-4" />
-          <span>Pair</span>
+          <span>PAIR</span>
         </Link>
       );
-    } else {
-      return (
-        <div
-          className={`${baseClasses} text-muted-foreground/50 cursor-not-allowed`}
-          title="Premium subscription required"
-        >
-          <Users className="h-4 w-4" />
-          <span>Pair (Premium)</span>
-        </div>
-      );
     }
+
+    return (
+      <div
+        className={`${baseClasses} text-muted-foreground/50 cursor-not-allowed`}
+        title="Complete your profile and subscribe to access Pair Reading"
+      >
+        <Users className="h-4 w-4" />
+        <span>PAIR (Premium)</span>
+      </div>
+    );
   };
 
   return (
@@ -95,7 +122,7 @@ export default function Header() {
             <span>HOME</span>
           </Link>
 
-          <PairNavItem />
+          <PairLink />
 
           <Link
             href="/dashboard/profile"
@@ -104,6 +131,7 @@ export default function Header() {
             <User className="h-4 w-4" />
             <span>YOU</span>
           </Link>
+
           <button
             onClick={handleSignOut}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -150,7 +178,7 @@ export default function Header() {
                 <span>HOME</span>
               </Link>
 
-              <PairNavItem isMobile={true} />
+              <PairLink isMobile={true} />
 
               <Link
                 href="/dashboard/profile"
@@ -159,6 +187,7 @@ export default function Header() {
                 <User className="h-4 w-4" />
                 <span>YOU</span>
               </Link>
+
               <button
                 onClick={handleSignOut}
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-muted rounded-sm w-full"

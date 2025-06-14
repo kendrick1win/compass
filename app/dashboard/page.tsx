@@ -17,12 +17,13 @@ export default async function Dashboard() {
   const userEmail = data.user.email || "";
   const displayName = userEmail.split("@")[0];
 
-  // Check if the user has a row in the profile table
+  // Check if the user has a row in the profile table with force refresh
   const { data: profileData, error: profileError } = await supabase
-    .from("profile")
+    .from("profiles")
     .select("id")
     .eq("user_id", data.user.id)
-    .single();
+    .single()
+    .throwOnError();
 
   const hasProfile = !profileError && profileData;
 
@@ -49,34 +50,31 @@ export default async function Dashboard() {
           Welcome, {displayName}!
         </h1>
         <div className="flex flex-col items-center gap-4 w-full">
-          <Link href="/dashboard/profile" className="w-full max-w-4xl">
-            <Button className="w-full py-6 text-lg">
-              Go To Your Free Reading
-            </Button>
-          </Link>
-          
-          {canAccessPremiumFeatures ? (
-            <>
-              <Link href="/dashboard/pair" className="w-full max-w-4xl">
-                <Button className="w-full py-6 text-lg">Pair Reading</Button>
-              </Link>
-              <DailyReading />
-            </>
+          {!hasProfile ? (
+            <Link href="/dashboard/profile" className="w-full max-w-4xl">
+              <Button className="w-full py-6 text-lg">
+                Get Your Free Reading
+              </Button>
+            </Link>
           ) : (
             <>
-              <Button className="w-full max-w-4xl py-6 text-lg" disabled>
-                Pair Reading (Premium Only)
-              </Button>
-              <Button className="w-full py-6 text-lg" disabled>
-                Daily Reading (Premium Only)
-              </Button>
-              {!hasProfile && (
-                <p className="text-center text-red-500">
-                  Please complete your profile to access premium features
-                </p>
-              )}
-              {hasProfile && !isSubscribed && (
+              <Link href="/dashboard/profile" className="w-full max-w-4xl">
+                <Button className="w-full py-6 text-lg">
+                  View Your Free Reading
+                </Button>
+              </Link>
+              
+              {!isSubscribed && (
                 <SubscribeCard userId={data.user.id} />
+              )}
+              
+              {isSubscribed && (
+                <>
+                  <Link href="/dashboard/pair" className="w-full max-w-4xl">
+                    <Button className="w-full py-6 text-lg">Pair Reading</Button>
+                  </Link>
+                  <DailyReading />
+                </>
               )}
             </>
           )}
