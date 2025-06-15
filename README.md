@@ -5,12 +5,14 @@ A full-stack web application demonstrating modern web development practices, bui
 ## Technical Highlights
 
 ### Modern Architecture
+
 - **App Router & Server Components**: Leveraging Next.js 15's latest features for optimal performance and SEO
 - **TypeScript**: Full type safety across the entire application
 - **Server Actions**: Efficient server-side operations with type-safe API endpoints
 - **Middleware Integration**: Advanced request handling and authentication flow
 
-### Frontend 
+### Frontend
+
 - **Component Architecture**: Modular, reusable components using Radix UI primitives
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
 - **State Management**: Efficient React hooks and context management
@@ -18,13 +20,15 @@ A full-stack web application demonstrating modern web development practices, bui
 - **Accessibility**: WCAG-compliant components and semantic HTML
 
 ### Backend & Infrastructure
+
 - **Authentication**: Secure user management with Supabase Auth
 - **Database**: Real-time data synchronization with Supabase
-- **API Integration**: RESTful endpoints with Axios
+- **API Integration**: RESTful endpoints
 - **Payment Processing**: Secure transactions with Stripe
 - **Environment Management**: Secure configuration with environment variables
 
 ### Development Practices
+
 - **Code Quality**: ESLint and TypeScript for robust type checking
 - **Performance**: Optimized builds with Turbopack
 - **Testing**: Component and integration testing setup
@@ -34,6 +38,7 @@ A full-stack web application demonstrating modern web development practices, bui
 ## Tech Stack
 
 ### Core Technologies
+
 - **Framework:** Next.js 15.3.0
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS 4
@@ -41,6 +46,7 @@ A full-stack web application demonstrating modern web development practices, bui
 - **API Integration:** Axios
 
 ### UI/UX
+
 - **Component Library:** Radix UI
 - **Icons:** Heroicons, Lucide React
 - **Animations:** Framer Motion
@@ -48,6 +54,7 @@ A full-stack web application demonstrating modern web development practices, bui
 - **Date Handling:** date-fns
 
 ### Backend & Services
+
 - **Authentication:** Supabase Auth
 - **Database:** Supabase
 - **Payments:** Stripe
@@ -56,6 +63,7 @@ A full-stack web application demonstrating modern web development practices, bui
 ## Getting Started
 
 1. Clone and setup:
+
 ```bash
 git clone [repository-url]
 cd compass
@@ -63,6 +71,7 @@ npm install
 ```
 
 2. Configure environment:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -71,6 +80,7 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 ```
 
 3. Development:
+
 ```bash
 npm run dev     # Start development server with Turbopack
 npm run build   # Production build
@@ -107,12 +117,14 @@ npm run lint    # Code quality check
 ## Development Workflow
 
 1. Feature Development
+
    - Create feature branch
    - Implement with TypeScript
    - Add tests
    - Submit PR
 
 2. Code Review
+
    - Type checking
    - Linting
    - Performance review
@@ -122,4 +134,3 @@ npm run lint    # Code quality check
    - Automated builds
    - Environment-specific configs
    - Performance monitoring
-
