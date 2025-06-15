@@ -75,9 +75,9 @@ export async function GET(req: NextRequest) {
             
             # 🌟 TODAY'S READING
             
-            Lucky Number: [generate a lucky number based on the chart and today's date.]
+            Lucky Number: [generate a lucky number for the user today based on the chart and today's date.]
             
-            Lucky Colour: [generate a lucky color based on the chart and today's date.]
+            Lucky Colour: [generate a lucky color for the user today based on the chart and today's date.]
             
             Quote of the day: "[generate an inspiring quote]"
             
@@ -87,12 +87,16 @@ export async function GET(req: NextRequest) {
             ## 🌱 Activities To Embrace or Avoid
             **DO's:**
             • [bullet point 1]
+
             • [bullet point 2] 
+
             • [bullet point 3]
             
             **DONT'S:**
             • [bullet point 1]
+
             • [bullet point 2]
+            
             • [bullet point 3]
             
             ## 🎁 Potential Opportunities or Challenges (${dateStr})

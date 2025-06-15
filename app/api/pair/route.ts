@@ -141,7 +141,15 @@ export async function POST(req: NextRequest) {
 
             **Growth Potential Together:** Use bullet points to describe what they can learn from each other and how they evolve together.
 
-            Format each section (except Overview) with bullet points using "•" symbols. Add a blank line between each bullet point for better readability. Use appropriate emojis in your headings. Keep tone warm, positive, but honest. Let each reading be unique to their specific elemental combination and relationship dynamics. Avoid formulaic language - make it feel like personalized insight.`,
+            Format each section (except Overview) with bullet points using "•" symbols with proper spacing like this example:
+
+            • [bullet point 1]
+
+            • [bullet point 2]
+
+            • [bullet point 3]
+
+            Each bullet point should be on its own line with a blank line between each one for better readability. Use appropriate emojis in your headings. Keep tone warm, positive, but honest. Let each reading be unique to their specific elemental combination and relationship dynamics. Avoid formulaic language - make it feel like personalized insight.`,
         },
       ],
     });
