@@ -75,9 +75,9 @@ export async function GET(req: NextRequest) {
             
             # 🌟 TODAY'S READING
             
-            Lucky Number: [generate a number 1-9]
+            Lucky Number: [generate a lucky number based on the chart and today's date.]
             
-            Lucky Colour: [generate an appropriate color]
+            Lucky Colour: [generate a lucky color based on the chart and today's date.]
             
             Quote of the day: "[generate an inspiring quote]"
             
