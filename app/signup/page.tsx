@@ -61,7 +61,7 @@ export default function SignUpPage() {
         }
       } else {
         // Show success message or redirect
-        router.push('/login?message=Check your email to confirm your account');
+        router.push('/confirm-email');
       }
     } catch (err) {
       setError('An unexpected error occurred');

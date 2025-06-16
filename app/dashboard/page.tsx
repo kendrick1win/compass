@@ -21,11 +21,10 @@ export default async function Dashboard() {
   const { data: profileData, error: profileError } = await supabase
     .from("profiles")
     .select("id")
-    .eq("user_id", data.user.id)
-    .single()
-    .throwOnError();
+    .eq("user_id", data.user.id);
 
-  const hasProfile = !profileError && profileData;
+  // A user has a profile if we got data back and it's not empty
+  const hasProfile = !profileError && profileData && profileData.length > 0;
 
   // Check if the user is subscribed in the subscriptions table
   const { data: subscriptionData, error: subscriptionError } = await supabase
