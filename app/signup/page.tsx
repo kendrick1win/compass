@@ -1,5 +1,4 @@
 "use client";
-import { signup } from "@/app/login/actions";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +22,52 @@ export default function SignUpPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    // Password validation
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    try {
+      const supabase = createClientComponentClient();
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        // Handle specific error messages
+        if (error.message.includes('User already registered')) {
+          setError('An account with this email already exists');
+        } else if (error.message.includes('Password')) {
+          setError('Password must be at least 6 characters long');
+        } else {
+          setError(error.message);
+        }
+      } else {
+        // Show success message or redirect
+        router.push('/login?message=Check your email to confirm your account');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred');
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Link
@@ -33,7 +78,7 @@ export default function SignUpPage() {
         <span>Back</span>
       </Link>
       <Card className="w-full max-w-sm">
-        <form>
+        <form onSubmit={handleSignUp}>
           <CardHeader>
             <CardTitle className="text-2xl">Sign Up</CardTitle>
             <CardDescription>
@@ -43,6 +88,9 @@ export default function SignUpPage() {
           <CardContent className="grid gap-4">
             {/* Google Sign In Button Component */}
             <GoogleSignInButton />
+            <p className="text-xs font-medium text-foreground text-center">
+              Note: Google sign-in may not work in embedded web views (LinkedIn, Instagram, Messenger, etc.). Please use email sign-in or open in a regular browser.
+            </p>
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -73,8 +121,8 @@ export default function SignUpPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4 mt-3">
-            <Button className="w-full" formAction={signup}>
-              Sign up
+            <Button className="w-full" type="submit">
+              Create Account
             </Button>
             {error && (
               <div className="text-red-500 text-sm mt-2 text-center">
