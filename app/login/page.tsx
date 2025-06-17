@@ -40,19 +40,14 @@ export default function LoginPage() {
         <CardContent className="grid gap-4">
           <GoogleSignInButton />
           <p className="text-xs font-medium text-foreground text-center">
-            Note: Google sign-in may not work in embedded web views (LinkedIn, Instagram, Messenger, etc.). Please open in a regular browser.
+            Note: Google sign-in may not work in embedded web views (LinkedIn,
+            Instagram, Messenger, etc.). Please open in a regular browser.
           </p>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           {error && (
             <div className="text-red-500 text-sm text-center">{error}</div>
           )}
-          <div className="text-sm text-muted-foreground text-center">
-            Don't have an account?{" "}
-            <Link href="/signup" className="text-primary hover:underline">
-              Sign up
-            </Link>
-          </div>
         </CardFooter>
       </Card>
     </div>
