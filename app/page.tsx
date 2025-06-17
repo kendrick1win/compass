@@ -12,12 +12,14 @@ export default function LandingPage() {
       <LandingNav />
       <div className="flex flex-col">
         <HeroSection />
+
+        <Try />
+
         {/* Features Section */}
         <FeaturesSection />
-        
+
         <WhatIsBaziSection />
         {/* */}
-        <Try />
 
         {/* CTA Section */}
         <CTASection />
