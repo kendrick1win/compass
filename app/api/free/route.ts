@@ -14,12 +14,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { year, month, day, hour, gender } = body;
 
-    // OPTIMIZATION: Get singleton DateMappingLoader before calculations
+    // Get singleton DateMappingLoader
     const dateLoader = getDateMappingLoader();
-    console.log(
-      "Pre-calculation Cache Stats:",
-      dateLoader.getOptimizationStats()
-    );
 
     // Generate Bazi data using the helper
     const { analysis, chineseCharacters } = generateBaziData(
@@ -28,11 +24,6 @@ export async function POST(req: NextRequest) {
       day,
       hour,
       gender
-    );
-
-    console.log(
-      "Post-calculation Cache Stats:",
-      dateLoader.getOptimizationStats()
     );
 
     // AI Reading

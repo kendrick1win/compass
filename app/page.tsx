@@ -14,6 +14,7 @@ export default function LandingPage() {
         <HeroSection />
         {/* Features Section */}
         <FeaturesSection />
+        
         <WhatIsBaziSection />
         {/* */}
         <Try />

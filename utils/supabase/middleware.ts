@@ -47,7 +47,8 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/auth') ||
     request.nextUrl.pathname.startsWith('/_next') ||
     request.nextUrl.pathname.startsWith('error') ||
-    request.nextUrl.pathname.startsWith('/api/public'); // If you have any public API endpoints
+    request.nextUrl.pathname.startsWith('/api/public') || // If you have any public API endpoints
+    request.nextUrl.pathname.startsWith('/api/free'); // Free Bazi reading endpoint
 
   if (!user && !isPublicRoute) {
     // no user, redirect to login page

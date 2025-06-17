@@ -327,7 +327,7 @@ export default function Try() {
                     {/* Button sits above the overlay */}
                     <div className="absolute left-0 right-0 bottom-4 flex justify-center pointer-events-auto">
                       <Button asChild>
-                        <a href="/signup">Sign Up to See Full Reading</a>
+                        <a href="/login">Sign Up to See Full Reading</a>
                       </Button>
                     </div>
                   </div>
