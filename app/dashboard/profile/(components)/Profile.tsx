@@ -76,6 +76,15 @@ export default function ProfileForm() {
   const [result, setResult] = useState<BaziResult | null>(null);
   const [activeTab, setActiveTab] = useState("chart");
   const [showForm, setShowForm] = useState(true);
+  const [formData, setFormData] = useState<{
+    date: Date;
+    hour: number | string;
+    gender: string;
+  }>({
+    date: new Date(2001, 0, 1),
+    hour: 12,
+    gender: "male",
+  });
   const supabase = createClient();
 
   useEffect(() => {
@@ -134,18 +143,51 @@ export default function ProfileForm() {
     fetchExistingProfile();
   }, []); // Empty dependency array means this runs once when component mounts
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = e.target.valueAsDate;
+    if (date) {
+      setFormData((prev) => ({
+        ...prev,
+        date,
+      }));
+    }
+  };
+
+  const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only update if value is empty or a valid number within range
+    if (
+      value === "" ||
+      (!isNaN(Number(value)) && Number(value) >= 0 && Number(value) <= 23)
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        hour: value === "" ? "" : parseInt(value),
+      }));
+    }
+  };
+
+  const handleGenderChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      gender: value,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const formData = new FormData(e.currentTarget);
       const data = {
-        year: parseInt(formData.get("year") as string),
-        month: parseInt(formData.get("month") as string),
-        day: parseInt(formData.get("day") as string),
-        hour: parseInt(formData.get("hour") as string),
-        gender: formData.get("gender"),
+        year: formData.date.getFullYear(),
+        month: formData.date.getMonth() + 1,
+        day: formData.date.getDate(),
+        hour:
+          typeof formData.hour === "string"
+            ? parseInt(formData.hour)
+            : formData.hour,
+        gender: formData.gender,
       };
 
       const response = await fetch("/api/profile", {
@@ -210,61 +252,33 @@ export default function ProfileForm() {
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="year" className="flex items-center gap-2">
+                    <Label htmlFor="date" className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
-                      Year
+                      Birth Date
                     </Label>
                     <Input
-                      type="number"
-                      id="year"
-                      name="year"
-                      min="1900"
-                      max="2025"
+                      id="date"
+                      type="date"
+                      value={formData.date.toISOString().split("T")[0]}
+                      onChange={handleDateChange}
                       required
-                      placeholder="Birth year"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="month" className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      Month
-                    </Label>
-                    <Input
-                      type="number"
-                      id="month"
-                      name="month"
-                      min="1"
-                      max="12"
-                      required
-                      placeholder="1-12"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="day" className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      Day
-                    </Label>
-                    <Input
-                      type="number"
-                      id="day"
-                      name="day"
-                      min="1"
-                      max="31"
-                      required
-                      placeholder="1-31"
+                      className="[&::-webkit-calendar-picker-indicator]:opacity-50 hover:[&::-webkit-calendar-picker-indicator]:opacity-100"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="hour" className="flex items-center gap-2">
                       <Clock className="h-4 w-4 text-muted-foreground" />
-                      Hour (24hr)
+                      Birth Hour (24hr)
                     </Label>
                     <Input
                       type="number"
                       id="hour"
                       name="hour"
+                      value={formData.hour}
+                      onChange={handleHourChange}
                       min="0"
                       max="23"
+                      step="1"
                       required
                       placeholder="0-23"
                     />
@@ -274,7 +288,10 @@ export default function ProfileForm() {
                       <User className="h-4 w-4 text-muted-foreground" />
                       Gender
                     </Label>
-                    <Select name="gender" required>
+                    <Select
+                      value={formData.gender}
+                      onValueChange={handleGenderChange}
+                    >
                       <SelectTrigger id="gender">
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
