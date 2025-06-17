@@ -32,9 +32,9 @@ export default function LoginPage() {
       </Link>
       <Card className="w-full max-w-sm m-1">
         <CardHeader>
-          <CardTitle className="text-2xl">Sign In</CardTitle>
+          <CardTitle className="text-2xl">Sign Up / Sign In</CardTitle>
           <CardDescription>
-            Sign in to your account with Google.
+            Sign up / Sign in to your account with Google.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
