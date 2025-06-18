@@ -40,15 +40,14 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // List of public routes that don't require authentication
-  const isPublicRoute = 
-    request.nextUrl.pathname === '/' || // Landing page
-    request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/confirm-email') ||
-    request.nextUrl.pathname.startsWith('/auth') ||
-    request.nextUrl.pathname.startsWith('/_next') ||
-    request.nextUrl.pathname.startsWith('error') ||
-    request.nextUrl.pathname.startsWith('/api/public') || // If you have any public API endpoints
-    request.nextUrl.pathname.startsWith('/api/free'); // Free Bazi reading endpoint
+  const isPublicRoute =
+    request.nextUrl.pathname === "/" || // Landing page
+    request.nextUrl.pathname.startsWith("/login") ||
+    request.nextUrl.pathname.startsWith("/confirm-email") ||
+    request.nextUrl.pathname.startsWith("/auth") ||
+    request.nextUrl.pathname.startsWith("/_next") ||
+    request.nextUrl.pathname.startsWith("error") ||
+    request.nextUrl.pathname.startsWith("/api/public"); // If you have any public API endpoints
 
   if (!user && !isPublicRoute) {
     // no user, redirect to login page

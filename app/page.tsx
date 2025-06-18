@@ -13,7 +13,7 @@ export default function LandingPage() {
       <div className="flex flex-col">
         <HeroSection />
 
-        <Try />
+        {/* <Try /> */}
 
         {/* Features Section */}
         <FeaturesSection />
