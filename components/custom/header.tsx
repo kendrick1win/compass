@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Home, Calendar, User, Users, LogOut } from "lucide-react";
 import { ModeToggle } from "../theme/ModeToggle";
-import { createClient } from "@/utils/supabase/client";
+import supabase from "@/utils/supabase/client";
 import { redirect } from "next/navigation";
+import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [canAccessPair, setCanAccessPair] = useState(false);
-  const supabase = createClient();
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     const checkAccess = async (userId: string) => {
@@ -31,8 +32,15 @@ export default function Header() {
       }
     };
 
+
+    // Initial check
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
+      setSession(session);
+    });
+
+
     // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event: AuthChangeEvent, session: Session|null) => {
       if (session?.user?.id) {
         await checkAccess(session.user.id);
       } else {
@@ -40,12 +48,6 @@ export default function Header() {
       }
     });
 
-    // Initial check
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user?.id) {
-        checkAccess(session.user.id);
-      }
-    });
 
     // Set up realtime subscription
     const channel = supabase
@@ -58,7 +60,7 @@ export default function Header() {
           table: 'subscriptions'
         },
         () => {
-          supabase.auth.getSession().then(({ data: { session } }) => {
+          supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
             if (session?.user?.id) {
               checkAccess(session.user.id);
             }

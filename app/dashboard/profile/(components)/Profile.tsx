@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react"; // Updated import
-import { createClient } from "@/utils/supabase/client";
+import supabase from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +24,7 @@ import {
 import { Calendar, Clock, User, ChevronRight, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { BaziChart } from "./BaziChart";
+import { AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 interface BaziResult {
   message: string;
@@ -85,9 +86,31 @@ export default function ProfileForm() {
     hour: 12,
     gender: "male",
   });
-  const supabase = createClient();
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
+    // Check active session
+    supabase.auth.getSession().then((response: { data: { session: Session | null } }) => {
+      setSession(response.data.session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      (_event: AuthChangeEvent, session: Session | null) => {
+        setSession(session);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!session?.user) return;
+    
     const fetchExistingProfile = async () => {
       try {
         const {
@@ -102,7 +125,7 @@ export default function ProfileForm() {
             .eq("user_id", user.id);
 
           if (countError) {
-            console.error("Error checking profile existence:", countError);
+            console.error("Error checking profile existence");
             return;
           }
 
@@ -141,7 +164,7 @@ export default function ProfileForm() {
     };
 
     fetchExistingProfile();
-  }, []); // Empty dependency array means this runs once when component mounts
+  }, [session]); // Now depends on session changes
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const date = e.target.valueAsDate;

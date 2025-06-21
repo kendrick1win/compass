@@ -35,7 +35,7 @@ import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
 import Loading from "./(components)/loading";
 import Header from "@/components/custom/header";
-import { createClient } from "@/utils/supabase/client";
+import supabase from "@/utils/supabase/client";
 // Use the new local BaziChart component
 import { BaziChart } from "./(components)/BaziChart";
 
@@ -64,7 +64,6 @@ const markdownComponents: Components = {
 };
 
 export default function PairReadingPage() {
-  const supabase = createClient();
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);

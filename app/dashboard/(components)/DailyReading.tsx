@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@/utils/supabase/client";
+import supabase from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Loader2, ScrollText } from "lucide-react";
 import {
@@ -50,7 +50,6 @@ export default function DailyReading() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [hasCheckedExisting, setHasCheckedExisting] = useState(false);
-  const supabase = createClient();
 
   const checkExistingReading = async () => {
     try {
