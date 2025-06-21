@@ -21,7 +21,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
-import { Calendar, Clock, User, ChevronRight, Loader2 } from "lucide-react";
+import { Calendar, Clock, User, ChevronRight, Loader2, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { BaziChart } from "./BaziChart";
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
@@ -77,6 +77,7 @@ export default function ProfileForm() {
   const [result, setResult] = useState<BaziResult | null>(null);
   const [activeTab, setActiveTab] = useState("chart");
   const [showForm, setShowForm] = useState(true);
+  const [copied, setCopied] = useState(false);
   const [formData, setFormData] = useState<{
     date: Date;
     hour: number | string;
@@ -244,6 +245,19 @@ export default function ProfileForm() {
     return `${month}/${day}/${year} at ${formattedHour} (${gender})`;
   };
 
+  // Function to copy chart text
+  const copyChartText = async () => {
+    if (!result?.chineseCharacters) return;
+    
+    try {
+      await navigator.clipboard.writeText(result.chineseCharacters);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy text:', error);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       {showForm ? (
@@ -380,7 +394,36 @@ export default function ProfileForm() {
               </CardDescription>
             </CardHeader>
             <CardContent className="p-6">
-              <BaziChart chineseCharacters={result.chineseCharacters} />
+              <div className="space-y-4">
+                <BaziChart chineseCharacters={result.chineseCharacters} />
+                
+                {/* Copy section */}
+                <div className="flex flex-col items-center space-y-3 pt-4 border-t border-border/50">
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={copyChartText}
+                      className="flex items-center space-x-2"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="h-4 w-4 text-green-600" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4" />
+                          <span>Copy Chart</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground text-center max-w-md">
+                    You can copy your chart and ask ChatGPT, DeepSeek, or other AI tools for more insights about your BaZi reading!
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
