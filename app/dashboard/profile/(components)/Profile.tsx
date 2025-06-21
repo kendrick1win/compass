@@ -21,7 +21,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
-import { Calendar, Clock, User, ChevronRight, Loader2, Copy, Check } from "lucide-react";
+import { Calendar, Clock, User, ChevronRight, Loader2, Copy, Check, ChevronDown } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { BaziChart } from "./BaziChart";
 import { AuthChangeEvent, Session } from "@supabase/supabase-js";
@@ -78,6 +78,9 @@ export default function ProfileForm() {
   const [activeTab, setActiveTab] = useState("chart");
   const [showForm, setShowForm] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [promptCopied, setPromptCopied] = useState(false);
+  const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null);
+  const [showPrompts, setShowPrompts] = useState(false);
   const [formData, setFormData] = useState<{
     date: Date;
     hour: number | string;
@@ -88,6 +91,35 @@ export default function ProfileForm() {
     gender: "male",
   });
   const [session, setSession] = useState<Session | null>(null);
+
+  // Sample prompts for AI tools
+  const samplePrompts = [
+    {
+      id: "career",
+      title: "Career Guidance",
+      prompt: "Based on this BaZi chart, what career paths would be most suitable for me? What are my strengths and potential challenges in the workplace?"
+    },
+    {
+      id: "relationships",
+      title: "Relationships & Compatibility",
+      prompt: "What does this BaZi chart reveal about my personality in relationships? What type of partner would be most compatible with me?"
+    },
+    {
+      id: "health",
+      title: "Health & Wellness",
+      prompt: "What health aspects should I pay attention to based on this BaZi chart? Are there any specific elements I should balance?"
+    },
+    {
+      id: "timing",
+      title: "Timing & Luck",
+      prompt: "What are the best times for important decisions based on this BaZi chart? When should I be more cautious?"
+    },
+    {
+      id: "general",
+      title: "General Analysis",
+      prompt: "Please provide a comprehensive analysis of this BaZi chart. What are the key characteristics and life themes for this person?"
+    }
+  ];
 
   useEffect(() => {
     // Check active session
@@ -258,6 +290,17 @@ export default function ProfileForm() {
     }
   };
 
+  // Function to copy selected prompt
+  const copyPrompt = async (promptText: string, promptId: string) => {
+    try {
+      await navigator.clipboard.writeText(promptText);
+      setCopiedPromptId(promptId);
+      setTimeout(() => setCopiedPromptId(null), 2000);
+    } catch (error) {
+      console.error('Failed to copy prompt:', error);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       {showForm ? (
@@ -422,6 +465,67 @@ export default function ProfileForm() {
                   <p className="text-sm text-muted-foreground text-center max-w-md">
                     You can copy your chart and ask ChatGPT, DeepSeek, or other AI tools for more insights about your BaZi reading!
                   </p>
+                  
+                  {/* Sample prompts section */}
+                  <div className="w-full max-w-md space-y-3">
+                    <div className="text-center">
+                      <p className="text-sm font-medium text-foreground mb-2">
+                        Sample prompts you can use:
+                      </p>
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowPrompts(!showPrompts)}
+                        className="flex items-center justify-between"
+                      >
+                        <span>View Sample Prompts</span>
+                        <ChevronDown 
+                          className={`h-4 w-4 transition-transform duration-200 ${
+                            showPrompts ? 'rotate-180' : ''
+                          }`} 
+                        />
+                      </Button>
+                      
+                      {showPrompts && (
+                        <div className="space-y-3 pt-2">
+                          {samplePrompts.map((prompt) => (
+                            <div key={prompt.id} className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <h4 className="text-sm font-medium text-foreground">
+                                  {prompt.title}
+                                </h4>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => copyPrompt(prompt.prompt, prompt.id)}
+                                  className="h-6 px-2 text-xs"
+                                >
+                                  {copiedPromptId === prompt.id ? (
+                                    <>
+                                      <Check className="h-3 w-3 text-green-600 mr-1" />
+                                      Copied!
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Copy className="h-3 w-3 mr-1" />
+                                      Copy
+                                    </>
+                                  )}
+                                </Button>
+                              </div>
+                              <div className="p-3 bg-muted/50 rounded-md border">
+                                <p className="text-sm text-muted-foreground">
+                                  {prompt.prompt}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </CardContent>
