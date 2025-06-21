@@ -3,8 +3,11 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import Header from "@/components/custom/header";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DailyReading from "./(components)/DailyReading";
 import SubscribeCard from "../(components)/subscription/subscribe";
+import { AIPrompts } from "@/components/ui/ai-prompts";
+import { BaziChart } from "./profile/(components)/BaziChart";
 
 export default async function Dashboard() {
   const supabase = await createClient();
@@ -20,11 +23,12 @@ export default async function Dashboard() {
   // Check if the user has a row in the profile table with force refresh
   const { data: profileData, error: profileError } = await supabase
     .from("profiles")
-    .select("id")
+    .select("id, chinese_characters")
     .eq("user_id", data.user.id);
 
   // A user has a profile if we got data back and it's not empty
   const hasProfile = !profileError && profileData && profileData.length > 0;
+  const chineseCharacters = hasProfile ? profileData[0]?.chinese_characters : null;
 
   // Check if the user is subscribed in the subscriptions table
   const { data: subscriptionData, error: subscriptionError } = await supabase
@@ -62,6 +66,48 @@ export default async function Dashboard() {
                   View Your Free Reading
                 </Button>
               </Link>
+              
+              {/* Combined BaZi Chart and AI Prompts */}
+              {chineseCharacters && (
+                <div className="w-full max-w-4xl">
+                  <Card className="border-primary/20">
+                    <CardHeader className="bg-primary/3 text-center">
+                      <CardTitle className="text-2xl font-semibold">
+                        Your BaZi Chart & AI Insights
+                      </CardTitle>
+                      <p className="text-sm text-muted-foreground">
+                        Your Four Pillars of Destiny and tools for deeper analysis
+                      </p>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-6">
+                      {/* Chart Section */}
+                      <div>
+                        <BaziChart chineseCharacters={chineseCharacters} />
+                      </div>
+                      
+                      {/* AI Prompts Section */}
+                      <div className="pt-4 border-t border-border/50">
+                        <AIPrompts 
+                          chineseCharacters={chineseCharacters}
+                          title="Get AI Insights for Your Reading"
+                          description="Copy your BaZi chart and use these prompts with ChatGPT, DeepSeek, or other AI tools for deeper analysis!"
+                          embedded={true}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+              
+              {/* AI Prompts Section for users without chart */}
+              {!chineseCharacters && (
+                <div className="w-full max-w-4xl">
+                  <AIPrompts 
+                    title="Get AI Insights for Your Reading"
+                    description="Copy your BaZi chart and use these prompts with ChatGPT, DeepSeek, or other AI tools for deeper analysis!"
+                  />
+                </div>
+              )}
               
               {!isSubscribed && (
                 <SubscribeCard userId={data.user.id} />
