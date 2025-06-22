@@ -90,7 +90,7 @@ export default async function Dashboard() {
                         <AIPrompts 
                           chineseCharacters={chineseCharacters}
                           title="Get AI Insights for Your Reading"
-                          description="Copy your BaZi chart and use these prompts with ChatGPT, DeepSeek, or other AI tools for deeper analysis!"
+                          description="You can use AI tools to ask more about your BaZi chart. Just click Copy Chart and use one of our sample prompts to get started!"
                           embedded={true}
                         />
                       </div>
@@ -104,7 +104,7 @@ export default async function Dashboard() {
                 <div className="w-full max-w-4xl">
                   <AIPrompts 
                     title="Get AI Insights for Your Reading"
-                    description="Copy your BaZi chart and use these prompts with ChatGPT, DeepSeek, or other AI tools for deeper analysis!"
+                    description="You can use AI tools to ask more about your BaZi chart. Just click Copy Chart and use one of our sample prompts to get started!"
                   />
                 </div>
               )}
