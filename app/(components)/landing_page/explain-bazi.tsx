@@ -81,7 +81,7 @@ const WhatIsBaziSection = () => {
               transition={{ duration: 0.5 }}
               className="absolute inset-0"
             >
-              <div className="h-full flex flex-col items-center justify-center text-center">
+              <div className="h-full flex flex-col items-center justify-center text-center text-gray-900">
                 <h2 className="text-4xl font-bold text-gray-900 mb-8">
                   {slides[currentSlide].title}
                 </h2>
