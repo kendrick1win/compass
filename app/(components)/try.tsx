@@ -125,6 +125,7 @@ export default function Try() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_DEMO_API_KEY || "",
         },
         body: JSON.stringify({
           year: formData.date.getFullYear(),

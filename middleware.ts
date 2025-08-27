@@ -15,6 +15,6 @@ export const config = {
      * - api/stripe (Stripe webhook endpoint)
      * Feel free to modify this pattern to include more paths.
      */
-    "/((?!_next/static|_next/image|favicon.ico|api/stripe|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/stripe|api/free|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

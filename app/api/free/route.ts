@@ -11,6 +11,17 @@ const openai = new OpenAI({
 
 export async function POST(req: NextRequest) {
   try {
+    // Simple API key protection - add DEMO_API_KEY to your .env.local
+    const apiKey = req.headers.get('x-api-key');
+    const expectedKey = process.env.DEMO_API_KEY;
+    
+    if (expectedKey && apiKey !== expectedKey) {
+      return NextResponse.json(
+        { error: "Invalid API key" },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json();
     const { year, month, day, hour, gender } = body;
 
