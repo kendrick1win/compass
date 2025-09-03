@@ -4,22 +4,20 @@ import { generateBaziData } from "./(components)/calculator";
 import { generateBaziReading } from "./(components)/generateReading";
 import { getDateMappingLoader } from "../../../lib/bazi-calculator-by-alvamind/src/utils/date-mapping";
 
-// Initialize OpenAI client
+// Initialize Adaptive OpenAI client
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.ADAPTIVE_API_KEY,
+  baseURL: "https://llmadaptive.uk/api/v1",
 });
 
 export async function POST(req: NextRequest) {
   try {
     // Simple API key protection - add DEMO_API_KEY to your .env.local
-    const apiKey = req.headers.get('x-api-key');
+    const apiKey = req.headers.get("x-api-key");
     const expectedKey = process.env.DEMO_API_KEY;
-    
+
     if (expectedKey && apiKey !== expectedKey) {
-      return NextResponse.json(
-        { error: "Invalid API key" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
     }
 
     const body = await req.json();

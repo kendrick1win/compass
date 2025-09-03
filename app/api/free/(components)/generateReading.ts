@@ -1,7 +1,8 @@
 import { OpenAI } from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.ADAPTIVE_API_KEY,
+  baseURL: 'https://llmadaptive.uk/api/v1'
 });
 
 export async function generateBaziReading(
@@ -43,7 +44,7 @@ export async function generateBaziReading(
  Write personality profile paragraphs using "you" language. Make it personal and insightful. No questions or disclaimers Use markdown format to display headers with emojis. Add a section for DO's and DONT'S.
  `;
   const completion = await openai.chat.completions.create({
-    model: "gpt-4o",
+    model: "", // Leave empty for intelligent routing
     messages: [
       {
         role: "system",
