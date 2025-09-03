@@ -56,18 +56,8 @@ export async function GET(req: NextRequest) {
     const today = new Date();
     const dateStr = today.toISOString().split("T")[0];
 
-    // Generate daily reading using OpenAI
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a Bazi expert providing daily readings based on a person's birth chart.",
-        },
-        {
-          role: "user",
-          content: `Generate a daily reading for ${dateStr} based on the following Bazi chart:
+    // Use adaptive model selection
+    const prompt = `Generate a daily reading for ${dateStr} based on the following Bazi chart:
             Chinese Characters: ${profile.chinese_characters}
             Analysis: ${JSON.stringify(profile.analysis)}
             
@@ -117,7 +107,67 @@ export async function GET(req: NextRequest) {
             🌀 [challenge 3]
             
             Keep it practical. Write personality profile paragraphs using "you" language. 
-            Make it personal and insightful. No questions or disclaimers. Use markdown format to display headers with emojis. Add a section for DO's and DONT'S. Use different emojis each time for opportunities and challenges to keep the content fresh and varied.`,
+            Make it personal and insightful. No questions or disclaimers. Use markdown format to display headers with emojis. Add a section for DO's and DONT'S. Use different emojis each time for opportunities and challenges to keep the content fresh and varied.`;
+
+    // Select best model using adaptive API
+    let selectedModel = "gpt-4"; // default fallback
+
+    try {
+      const modelSelectionResponse = await fetch(
+        "https://llmadaptive.uk/api/v1/select-model",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.ADAPTIVE_API_KEY}`,
+          },
+          body: JSON.stringify({
+            models: [
+              { name: "gpt-4", provider: "openai" },
+              { name: "gpt-4-turbo", provider: "openai" },
+              { name: "gpt-3.5-turbo", provider: "openai" },
+            ],
+            prompt: prompt,
+            user: user.id,
+          }),
+        }
+      );
+
+      if (modelSelectionResponse.ok) {
+        const modelSelection = await modelSelectionResponse.json();
+        if (modelSelection.model) {
+          selectedModel = modelSelection.model;
+          console.log(`Adaptive API selected model: ${selectedModel}`);
+        } else {
+          console.log(
+            `Using fallback model: ${selectedModel} (no model in response)`
+          );
+        }
+      } else {
+        console.log(
+          `Using fallback model: ${selectedModel} (API returned ${modelSelectionResponse.status})`
+        );
+      }
+    } catch (error) {
+      console.log(
+        `Using fallback model: ${selectedModel} (API error: ${
+          error instanceof Error ? error.message : "Unknown error"
+        })`
+      );
+    }
+
+    // Generate daily reading using selected model
+    const completion = await openai.chat.completions.create({
+      model: selectedModel,
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a Bazi expert providing daily readings based on a person's birth chart.",
+        },
+        {
+          role: "user",
+          content: prompt,
         },
       ],
     });
@@ -125,7 +175,7 @@ export async function GET(req: NextRequest) {
     const dailyReading = completion.choices[0].message.content;
 
     // Save the daily reading to the database
-    const { data: savedReading, error: saveError } = await supabase
+    const { error: saveError } = await supabase
       .from("daily_readings")
       .upsert({
         user_id: user.id,
